@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class ProduksiHarian extends Model
 {
     protected $fillable = [
-        'user_id', 'alat_tambang_id', 'tanggal', 'material', 
-        'volume', 'jam_operasi', 'lokasi', 'bahan_bakar', 'status_laporan'
+        'user_id', 'alat_tambang_id', 'tanggal', 'shift', 'material', 
+        'volume', 'jarak_angkut', 'jam_operasi', 'lokasi', 'bahan_bakar', 'cuaca', 'hambatan_operasional', 'catatan_tambahan', 'status_laporan'
     ];
 
     public function user()

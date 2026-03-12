@@ -33,25 +33,28 @@ class LaporanController extends Controller
         // 1. Validasi data yang masuk dari form
         $request->validate([
             'tanggal' => 'required|date',
+            'shift' => 'required',
+            'lokasi' => 'required',
             'alat_tambang_id' => 'required',
-            'material' => 'required|string',
             'volume' => 'required|numeric',
-            'jam_operasi' => 'required|integer',
-            'lokasi' => 'required|string',
             'bahan_bakar' => 'required|numeric',
         ]);
 
         // 2. Simpan Data ke tabel produksi_harians
         $produksi = ProduksiHarian::create([
-            'user_id' => Auth::id(), // ID Operator yang sedang login
+            'user_id' => auth()->id(),
             'alat_tambang_id' => $request->alat_tambang_id,
             'tanggal' => $request->tanggal,
-            'material' => $request->material,
-            'volume' => $request->volume,
-            'jam_operasi' => $request->jam_operasi,
+            'shift' => $request->shift,
             'lokasi' => $request->lokasi,
+            'volume' => $request->volume,
+            'jarak_angkut' => $request->jarak, // sesuaikan name di HTML
+            'jam_operasi' => $request->jam_operasi,
             'bahan_bakar' => $request->bahan_bakar,
-            'status_laporan' => 'Pending', // Status awal sesuai rancangan
+            'cuaca' => $request->cuaca,
+            'hambatan_operasional' => $request->hambatan,
+            'catatan_tambahan' => $request->catatan,
+            'status_laporan' => 'Pending',
         ]);
 
         // 3. Jika operator mengisi form Hambatan, simpan ke tabel hambatans
