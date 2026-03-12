@@ -5,6 +5,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AlatTambangController;
+use App\Http\Controllers\LokasiTambangController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -50,7 +51,10 @@ Route::middleware(['auth', 'role:Admin'])->group(function () {
     Route::resource('alat', AlatTambangController::class)->names([
         'index' => 'manajemen.alat',
     ]);
-    Route::get('/manajemen-lokasi', function () { return "Halaman Manajemen Lokasi"; })->name('manajemen.lokasi');
+    
+    Route::resource('lokasi', LokasiTambangController::class)->names([
+        'index' => 'manajemen.lokasi',
+    ]);
 });
 
 // Rute Riwayat Laporan (Bisa diakses semua role yang login)
