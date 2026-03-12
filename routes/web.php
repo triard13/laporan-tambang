@@ -31,7 +31,8 @@ Route::middleware(['auth', 'role:Operator,Supervisor'])->group(function () {
 // 2. Rute Khusus Supervisor -> Verifikasi Laporan
 Route::middleware(['auth', 'role:Supervisor'])->group(function () {
     Route::get('/verifikasi-laporan', [LaporanController::class, 'verifikasi'])->name('laporan.verifikasi');
-    // Nanti ditambah rute post/patch untuk aksi setujui/tolak
+
+    Route::post('/verifikasi-laporan/{id}', [LaporanController::class, 'processVerifikasi'])->name('laporan.process_verifikasi');
 });
 
 // 3. Rute Khusus Admin -> Manajemen Master Data

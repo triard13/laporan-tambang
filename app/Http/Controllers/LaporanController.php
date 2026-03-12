@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\ProduksiHarian;
 use App\Models\AlatTambang;
 use App\Models\Hambatan;
+use App\Models\Validasi;
 use Illuminate\Support\Facades\Auth;
 
 class LaporanController extends Controller
@@ -67,9 +68,40 @@ class LaporanController extends Controller
         return redirect()->back()->with('success', 'Laporan Harian berhasil disimpan dan menunggu verifikasi Supervisor!');
     }
 
-    // Menampilkan halaman verifikasi (Khusus Supervisor)
     public function verifikasi()
     {
-        return view('laporan.verifikasi'); // Nanti kita buat file ini
+        // Hanya ambil laporan yang statusnya masih 'Pending'
+        $laporans = ProduksiHarian::with(['user', 'alatTambang'])
+                    ->where('status_laporan', 'Pending')
+                    ->orderBy('created_at', 'asc')
+                    ->get();
+                    
+        return view('laporan.verifikasi', compact('laporans'));
+    }
+
+    // Memproses aksi Setujui / Tolak
+    public function processVerifikasi(Request $request, $id)
+    {
+        $request->validate([
+            'status_validasi' => 'required|in:Disetujui,Ditolak,Revisi',
+            'catatan' => 'nullable|string'
+        ]);
+
+        // 1. Ubah status di tabel produksi_harians
+        $laporan = ProduksiHarian::findOrFail($id);
+        $laporan->update([
+            'status_laporan' => $request->status_validasi
+        ]);
+
+        // 2. Catat rekam jejaknya di tabel validasis (Audit Trail)
+        \App\Models\Validasi::create([
+            'produksi_harian_id' => $laporan->id,
+            'user_id' => Auth::id(), // ID Supervisor yang login
+            'tanggal_validasi' => now(),
+            'status_validasi' => $request->status_validasi,
+            'catatan' => $request->catatan,
+        ]);
+
+        return redirect()->back()->with('success', 'Status laporan berhasil diubah menjadi: ' . $request->status_validasi);
     }
 }
