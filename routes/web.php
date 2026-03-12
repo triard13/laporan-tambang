@@ -46,6 +46,8 @@ Route::middleware(['auth', 'role:Admin'])->group(function () {
 // Rute Riwayat Laporan (Bisa diakses semua role yang login)
 Route::middleware(['auth'])->group(function () {
     Route::get('/riwayat-laporan', [LaporanController::class, 'index'])->name('laporan.riwayat');
+    Route::get('/laporan/{id}/edit', [LaporanController::class, 'edit'])->name('laporan.edit');
+    Route::put('/laporan/{id}', [LaporanController::class, 'update'])->name('laporan.update');
 });
 
 require __DIR__.'/auth.php';

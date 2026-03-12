@@ -107,4 +107,45 @@ class LaporanController extends Controller
 
         return redirect()->back()->with('success', 'Status laporan berhasil diubah menjadi: ' . $request->status_validasi);
     }
+
+    public function edit($id)
+    {
+        $laporan = ProduksiHarian::findOrFail($id);
+        $alats = AlatTambang::all();
+        
+        // Keamanan: Jangan biarkan orang mengedit laporan yang sudah disetujui
+        if($laporan->status_laporan != 'Pending') {
+            return redirect()->back()->with('error', 'Laporan yang sudah diproses tidak bisa diedit!');
+        }
+
+        return view('laporan.edit', compact('laporan', 'alats'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $laporan = ProduksiHarian::findOrFail($id);
+        
+        // Validasi data (sama dengan store)
+        $request->validate([
+            'tanggal' => 'required|date',
+            'volume' => 'required|numeric',
+            // ... validasi lainnya ...
+        ]);
+
+        $laporan->update([
+            'tanggal' => $request->tanggal,
+            'shift' => $request->shift,
+            'lokasi' => $request->lokasi,
+            'alat_tambang_id' => $request->alat_tambang_id,
+            'volume' => $request->volume,
+            'jarak_angkut' => $request->jarak,
+            'jam_operasi' => $request->jam_operasi,
+            'bahan_bakar' => $request->bahan_bakar,
+            'cuaca' => $request->cuaca,
+            'hambatan_operasional' => $request->hambatan,
+            'catatan_tambahan' => $request->catatan,
+        ]);
+
+        return redirect()->route('laporan.riwayat')->with('success', 'Laporan Berhasil Diperbarui!');
+    }
 }
