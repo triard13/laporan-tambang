@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AlatTambangController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -45,7 +46,10 @@ Route::middleware(['auth', 'role:Admin'])->group(function () {
     Route::get('/manajemen-pengguna/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/manajemen-pengguna/{id}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/manajemen-pengguna/{id}', [UserController::class, 'destroy'])->name('users.destroy');
-    Route::get('/manajemen-alat', function () { return "Halaman Manajemen Alat"; })->name('manajemen.alat');
+
+    Route::resource('alat', AlatTambangController::class)->names([
+        'index' => 'manajemen.alat',
+    ]);
     Route::get('/manajemen-lokasi', function () { return "Halaman Manajemen Lokasi"; })->name('manajemen.lokasi');
 });
 
