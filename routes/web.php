@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -38,7 +39,12 @@ Route::middleware(['auth', 'role:Supervisor'])->group(function () {
 
 // 3. Rute Khusus Admin -> Manajemen Master Data
 Route::middleware(['auth', 'role:Admin'])->group(function () {
-    Route::get('/manajemen-pengguna', function () { return "Halaman Manajemen Pengguna"; })->name('manajemen.users');
+    Route::get('/manajemen-pengguna', [UserController::class, 'index'])->name('manajemen.users');
+    Route::get('/manajemen-pengguna/tambah', [UserController::class, 'create'])->name('users.create');
+    Route::post('/manajemen-pengguna', [UserController::class, 'store'])->name('users.store');
+    Route::get('/manajemen-pengguna/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/manajemen-pengguna/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/manajemen-pengguna/{id}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::get('/manajemen-alat', function () { return "Halaman Manajemen Alat"; })->name('manajemen.alat');
     Route::get('/manajemen-lokasi', function () { return "Halaman Manajemen Lokasi"; })->name('manajemen.lokasi');
 });
