@@ -7,6 +7,7 @@ use App\Models\ProduksiHarian;
 use App\Models\AlatTambang;
 use App\Models\Hambatan;
 use App\Models\Validasi;
+use App\Models\AuditLog;
 use Illuminate\Support\Facades\Auth;
 
 class LaporanController extends Controller
@@ -67,6 +68,13 @@ class LaporanController extends Controller
             ]);
         }
 
+        AuditLog::create([ 
+            'user_id' => auth()->id(),
+            'aksi'    => 'Menambah',
+            'modul'   => 'Manajemen Laporan Harian',
+            'detail'  => "Penambahan laporan baru:\nId: {$produksi->id} \nOperator:". auth()->user()->nama_lengkap,
+        ]);
+
         // 4. Kembalikan ke halaman form dengan pesan sukses
         return redirect()->back()->with('success', 'Laporan Harian berhasil disimpan dan menunggu verifikasi Supervisor!');
     }
@@ -103,6 +111,13 @@ class LaporanController extends Controller
             'tanggal_validasi' => now(),
             'status_validasi' => $request->status_validasi,
             'catatan' => $request->catatan,
+        ]);
+
+        AuditLog::create([ 
+            'user_id' => auth()->id(),
+            'aksi'    => 'Verivikasi'. $request->status_validasi,
+            'modul'   => 'Verifikasi Laporan Harian',
+            'detail'  => "Verifikasi laporan harian:\nId: {$laporan->id} \nSupervisor: " . auth()->user()->nama_lengkap,
         ]);
 
         return redirect()->back()->with('success', 'Status laporan berhasil diubah menjadi: ' . $request->status_validasi);
@@ -144,6 +159,13 @@ class LaporanController extends Controller
             'cuaca' => $request->cuaca,
             'hambatan_operasional' => $request->hambatan,
             'catatan_tambahan' => $request->catatan,
+        ]);
+
+        AuditLog::create([ 
+            'user_id' => auth()->id(),
+            'aksi'    => 'Memperbarui',
+            'modul'   => 'Memperbarui Laporan Harian',
+            'detail'  => "Memperbarui lokasi baru:\nId: {$laporan->id} \n   Operator:". auth()->user()->nama_lengkap,
         ]);
 
         return redirect()->route('laporan.riwayat')->with('success', 'Laporan Berhasil Diperbarui!');

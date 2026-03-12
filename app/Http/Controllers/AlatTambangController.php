@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\AlatTambang;
 use Illuminate\Support\Facades\Storage;
+use App\Models\AuditLog;
 
 class AlatTambangController extends Controller
 {
@@ -39,7 +40,13 @@ class AlatTambangController extends Controller
             $data['gambar'] = $request->file('gambar')->store('alat', 'public');
         }
 
-        AlatTambang::create($data);
+        $alat = AlatTambang::create($data);
+        AuditLog::create([
+            'user_id' => auth()->id(),
+            'aksi'    => 'Menambah',
+            'modul'   => 'Manajemen Alat',
+            'detail'  => "Penambahan alat baru:\nKode: {$alat->kode_alat} \nNama: {$alat->nama_alat}",
+        ]);
 
         return redirect()->route('manajemen.alat')->with('success', 'Data alat berat berjaya ditambah!');
     }
@@ -80,6 +87,13 @@ class AlatTambangController extends Controller
 
         $alat->update($data);
 
+        AuditLog::create([
+            'user_id' => auth()->id(),
+            'aksi'    => 'Memoerbarui',
+            'modul'   => 'Manajemen Alat',
+            'detail'  => "Memperbarui alat baru:\nKode: {$alat->kode_alat} \nNama: {$alat->nama_alat}",
+        ]);
+
         return redirect()->route('manajemen.alat')->with('success', 'Data alat berat berjaya dikemas kini!');
     }
 
@@ -94,6 +108,13 @@ class AlatTambangController extends Controller
         }
 
         $alat->delete();
+
+        AuditLog::create([
+            'user_id' => auth()->id(),
+            'aksi'    => 'Menghapus',
+            'modul'   => 'Manajemen Alat',
+            'detail'  => "Menghapus alat baru:\nKode: {$alat->kode_alat} \nNama: {$alat->nama_alat}",
+        ]);
 
         return redirect()->route('manajemen.alat')->with('success', 'Data alat berat berjaya dipadam!');
     }

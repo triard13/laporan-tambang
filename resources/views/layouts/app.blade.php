@@ -47,6 +47,7 @@
                         <a href="{{ route('manajemen.users') }}" class="block px-4 py-3 rounded-md transition {{ request()->routeIs('manajemen.users') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Manajemen Pengguna</a>
                         <a href="{{ route('manajemen.alat') }}" class="block px-4 py-3 rounded-md transition {{ request()->routeIs('manajemen.alat') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Manajemen Alat</a>
                         <a href="{{ route('manajemen.lokasi') }}" class="block px-4 py-3 rounded-md transition {{ request()->routeIs('manajemen.lokasi') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Manajemen Lokasi</a>
+                        <a href="{{ route('log.aktifitas') }}" class="block px-4 py-3 rounded-md transition {{ request()->routeIs('manajemen.aktifitas') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Log aktifitas</a>
                     @endif
                 </nav>
             </aside>

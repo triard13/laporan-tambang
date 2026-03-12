@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User; 
 use Illuminate\Support\Facades\Hash;
+use App\Models\AuditLog;
 
 class UserController extends Controller
 {
@@ -53,11 +54,18 @@ class UserController extends Controller
         ]);
 
         // Simpan ke database
-        User::create([
+        $pengguna = User::create([
             'nama_lengkap' => $request->nama_lengkap,
             'email'        => $request->email,
             'password'     => Hash::make($request->password),
             'role'         => $request->role,
+        ]);
+
+        AuditLog::create([ 
+            'user_id' => auth()->id(),
+            'aksi'    => 'Menambah',
+            'modul'   => 'Manajemen Pengguna',
+            'detail'  => "Penambahan pengguna baru:\nNama: {$pengguna->nama_lengkap} \nRole: {$pengguna->role}",
         ]);
 
         // Redirect kembali ke tabel dengan pesan sukses
@@ -102,6 +110,13 @@ class UserController extends Controller
         // Simpan perubahan ke database
         $user->update($dataUpdate);
 
+        AuditLog::create([ 
+            'user_id' => auth()->id(),
+            'aksi'    => 'Memperbarui',
+            'modul'   => 'Manajemen Pengguna',
+            'detail'  => "Memperbarui pengguna baru:\nNama: {$user->nama_lengkap} \nRole: {$user->role}",
+        ]);
+
         return redirect()->route('manajemen.users')->with('success', 'Data pengguna berhasil diperbarui!');
     }
     
@@ -116,6 +131,13 @@ class UserController extends Controller
 
         // Hapus data dari database
         $user->delete();
+
+        AuditLog::create([ 
+            'user_id' => auth()->id(),
+            'aksi'    => 'Menghapus',
+            'modul'   => 'Manajemen Pengguna',
+            'detail'  => "Menghapus pengguna baru:\nNama: {$user->nama_lengkap} \nRole: {$user->role}",
+        ]);
 
         return redirect()->route('manajemen.users')->with('success', 'Pengguna bernama ' . $user->nama_lengkap . ' berhasil dihapus dari sistem!');
     }

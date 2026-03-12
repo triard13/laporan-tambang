@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AlatTambangController;
 use App\Http\Controllers\LokasiTambangController;
+use App\Http\Controllers\AuditLogController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -55,6 +56,7 @@ Route::middleware(['auth', 'role:Admin'])->group(function () {
     Route::resource('lokasi', LokasiTambangController::class)->names([
         'index' => 'manajemen.lokasi',
     ]);
+    Route::get('/log-aktifitas', [AuditLogController::class, 'index'])->name('log.aktifitas');
 });
 
 // Rute Riwayat Laporan (Bisa diakses semua role yang login)

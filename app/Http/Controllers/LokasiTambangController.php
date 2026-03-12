@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\LokasiTambang;
 use App\Models\User;
+use App\Models\AuditLog;
 
 class LokasiTambangController extends Controller
 {
@@ -29,7 +30,13 @@ class LokasiTambangController extends Controller
             'koordinator' => 'nullable|string|max:255',
         ]);
 
-        LokasiTambang::create($request->all());
+        $lokasi = LokasiTambang::create($request->all());
+        AuditLog::create([ 
+            'user_id' => auth()->id(),
+            'aksi'    => 'Menambah',
+            'modul'   => 'Manajemen Lokasi',
+            'detail'  => "Penambahan lokasi baru:\nNama: {$lokasi->nama_lokasi} \nKoordinator: {$lokasi->koordinator}",
+        ]);
         return redirect()->route('manajemen.lokasi')->with('success', 'Lokasi tambang berhasil ditambahkan!');
     }
 
@@ -52,6 +59,12 @@ class LokasiTambangController extends Controller
         ]);
 
         $lokasi->update($request->all());
+        AuditLog::create([
+            'user_id' => auth()->id(),
+            'aksi'    => 'Memperbarui',
+            'modul'   => 'Manajemen Lokasi',
+            'detail'  => "Memperbarui lokasi:\nNama: {$lokasi->nama_lokasi} \nKoordinator: {$lokasi->koordinator}",
+        ]);
         return redirect()->route('manajemen.lokasi')->with('success', 'Data lokasi berhasil diperbarui!');
     }
 
@@ -59,6 +72,12 @@ class LokasiTambangController extends Controller
     {
         $lokasi = LokasiTambang::findOrFail($id);
         $lokasi->delete();
+        AuditLog::create([
+            'user_id' => auth()->id(),
+            'aksi'    => 'Menghapus',
+            'modul'   => 'Manajemen Lokasi',
+            'detail'  => "Menghapus lokasi:\nNama: {$lokasi->nama_lokasi} \nKoordinator: {$lokasi->koordinator}",
+        ]);
         return redirect()->route('manajemen.lokasi')->with('success', 'Lokasi tambang berhasil dihapus!');
     }
 }
