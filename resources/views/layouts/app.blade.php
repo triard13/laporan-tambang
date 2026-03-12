@@ -12,14 +12,22 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased bg-gray-100">
+    <body class="font-sans antialiased bg-gray-100" x-data="{ sidebarOpen: false }">
         <div class="flex h-screen overflow-hidden">
             
-            <aside class="w-64 bg-[#2b2b36] text-white flex flex-col shadow-lg">
-                <div class="h-16 flex items-center justify-center border-b border-gray-700 mt-4 pb-4">
-                    <div class="text-xl font-bold flex items-center gap-2">
+            <div x-show="sidebarOpen" x-transition.opacity class="fixed inset-0 z-20 bg-black bg-opacity-50 lg:hidden" @click="sidebarOpen = false" style="display: none;"></div>
+
+            <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-30 w-64 bg-[#2b2b36] text-white flex flex-col shadow-lg transition duration-300 transform lg:translate-x-0 lg:static lg:inset-0">
+                
+                <div class="h-16 flex items-center justify-between px-4 border-b border-gray-700 mt-4 pb-4">
+                    <div class="text-xl font-bold flex items-center gap-2 w-full justify-center">
                         <span>📊 Laporan Tambang</span>
                     </div>
+                    <button @click="sidebarOpen = false" class="lg:hidden text-gray-400 hover:text-white">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                 </div>
 
                 <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto text-sm font-medium">
@@ -43,11 +51,18 @@
                 </nav>
             </aside>
 
-            <div class="flex-1 flex flex-col overflow-hidden">
+            <div class="flex-1 flex flex-col overflow-hidden w-full">
                 
-                <header class="h-16 bg-white border-b flex items-center justify-end px-6 shadow-sm">
+                <header class="h-16 bg-white border-b flex items-center justify-between lg:justify-end px-4 lg:px-6 shadow-sm">
+                    
+                    <button @click="sidebarOpen = true" class="text-gray-500 focus:outline-none lg:hidden">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+
                     <div class="flex items-center gap-4">
-                        <span class="text-gray-700 font-medium">{{ Auth::user()->nama_lengkap }} ({{ Auth::user()->role }})</span>
+                        <span class="text-gray-700 font-medium text-sm lg:text-base">{{ Auth::user()->nama_lengkap }} ({{ Auth::user()->role }})</span>
                         
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -58,9 +73,9 @@
                     </div>
                 </header>
 
-                <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6">
+                <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-4 lg:p-6">
                     @isset($header)
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-6">
+                        <h2 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-4 lg:mb-6">
                             {{ $header }}
                         </h2>
                     @endisset
