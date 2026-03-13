@@ -8,6 +8,7 @@ use App\Http\Controllers\AlatTambangController;
 use App\Http\Controllers\LokasiTambangController;
 use App\Http\Controllers\AuditLogController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RoleController;
 
 Route::get('/', function () {
     return redirect()->route('login'); // Langsung arahkan ke halaman login
@@ -57,6 +58,9 @@ Route::middleware(['auth', 'role:Admin'])->group(function () {
         'index' => 'manajemen.lokasi',
     ]);
     Route::get('/log-aktifitas', [AuditLogController::class, 'index'])->name('log.aktifitas');
+    Route::get('/kontrol-akses', [RoleController::class, 'index'])->name('kontrol.akses');
+    Route::get('/kontrol-akses/{nama}/edit', [RoleController::class, 'edit'])->name('kontrol.edit');
+Route::put('/kontrol-akses/{nama}', [RoleController::class, 'update'])->name('kontrol.update');
 });
 
 // Rute Riwayat Laporan (Bisa diakses semua role yang login)
@@ -65,5 +69,4 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/laporan/{id}/edit', [LaporanController::class, 'edit'])->name('laporan.edit');
     Route::put('/laporan/{id}', [LaporanController::class, 'update'])->name('laporan.update');
 });
-
 require __DIR__.'/auth.php';

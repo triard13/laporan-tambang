@@ -31,24 +31,39 @@
                 </div>
 
                 <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto text-sm font-medium">
-                    <a href="{{ route('dashboard') }}" class="block px-4 py-3 rounded-md transition {{ request()->routeIs('dashboard') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Dashboard</a>
                     
-                    @if(Auth::user()->role == 'Operator' || Auth::user()->role == 'Supervisor')
+                    @can('dashboard')
+                        <a href="{{ route('dashboard') }}" class="block px-4 py-3 rounded-md transition {{ request()->routeIs('dashboard') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Dashboard</a>
+                    @endcan
+                    
+                    @can('input')
                         <a href="{{ route('laporan.create') }}" class="block px-4 py-3 rounded-md transition {{ request()->routeIs('laporan.create') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Input Laporan</a>
-                    @endif
+                    @endcan
 
-                    @if(Auth::user()->role == 'Supervisor')
+                    @can('verifikasi')
                         <a href="{{ route('laporan.verifikasi') }}" class="block px-4 py-3 rounded-md transition {{ request()->routeIs('laporan.verifikasi') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Verifikasi Laporan</a>
-                    @endif
+                    @endcan
 
-                    <a href="{{ route('laporan.riwayat') }}" class="block px-4 py-3 rounded-md transition {{ request()->routeIs('laporan.riwayat') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Riwayat Laporan</a>
+                    @can('riwayat')
+                        <a href="{{ route('laporan.riwayat') }}" class="block px-4 py-3 rounded-md transition {{ request()->routeIs('laporan.riwayat') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Riwayat Laporan</a>
+                    @endcan
                     
-                    @if(Auth::user()->role == 'Admin')
+                    @can('pengguna')
                         <a href="{{ route('manajemen.users') }}" class="block px-4 py-3 rounded-md transition {{ request()->routeIs('manajemen.users') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Manajemen Pengguna</a>
+                    @endcan
+                    
+                    @can('alat')
                         <a href="{{ route('manajemen.alat') }}" class="block px-4 py-3 rounded-md transition {{ request()->routeIs('manajemen.alat') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Manajemen Alat</a>
+                    @endcan
+                    
+                    @can('lokasi')
                         <a href="{{ route('manajemen.lokasi') }}" class="block px-4 py-3 rounded-md transition {{ request()->routeIs('manajemen.lokasi') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Manajemen Lokasi</a>
-                        <a href="{{ route('log.aktifitas') }}" class="block px-4 py-3 rounded-md transition {{ request()->routeIs('manajemen.aktifitas') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Log aktifitas</a>
-                    @endif
+                    @endcan
+
+                    @role('Admin')
+                        <a href="{{ route('log.aktifitas') }}" class="block px-4 py-3 rounded-md transition {{ request()->routeIs('log.aktifitas') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Log Aktifitas</a>
+                        <a href="{{ route('kontrol.akses') }}" class="block px-4 py-3 rounded-md transition {{ request()->routeIs('kontrol.akses', 'kontrol.*') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Manajemen Akses</a>
+                    @endrole
                 </nav>
             </aside>
 
@@ -63,7 +78,9 @@
                     </button>
 
                     <div class="flex items-center gap-4">
-                        <span class="text-gray-700 font-medium text-sm lg:text-base">{{ Auth::user()->nama_lengkap }} ({{ Auth::user()->role }})</span>
+                        <span class="text-gray-700 font-medium text-sm lg:text-base">
+                            {{ Auth::user()->nama_lengkap }} ({{ Auth::user()->getRoleNames()->first() ?? Auth::user()->role }})
+                        </span>
                         
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf

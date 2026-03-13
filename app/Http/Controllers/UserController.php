@@ -61,6 +61,8 @@ class UserController extends Controller
             'role'         => $request->role,
         ]);
 
+        $user->assignRole($request->role);
+
         AuditLog::create([ 
             'user_id' => auth()->id(),
             'aksi'    => 'Menambah',
@@ -109,6 +111,8 @@ class UserController extends Controller
 
         // Simpan perubahan ke database
         $user->update($dataUpdate);
+        
+        $user->syncRoles($request->role);
 
         AuditLog::create([ 
             'user_id' => auth()->id(),
