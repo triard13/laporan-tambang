@@ -34,7 +34,7 @@ class LokasiTambangController extends Controller
         AuditLog::create([ 
             'user_id' => auth()->id(),
             'aksi'    => 'Menambah',
-            'modul'   => 'Manajemen Lokasi',
+            'modul'   => 'Manajemen Lokasi \n{$lokasi->nama_lokasi}',
             'detail'  => "Penambahan lokasi baru:\nNama: {$lokasi->nama_lokasi} \nKoordinator: {$lokasi->koordinator}",
         ]);
         return redirect()->route('manajemen.lokasi')->with('success', 'Lokasi tambang berhasil ditambahkan!');
@@ -62,7 +62,7 @@ class LokasiTambangController extends Controller
         AuditLog::create([
             'user_id' => auth()->id(),
             'aksi'    => 'Memperbarui',
-            'modul'   => 'Manajemen Lokasi',
+            'modul'   => 'Manajemen Lokasi \n{$lokasi->nama_lokasi}',
             'detail'  => "Memperbarui lokasi:\nNama: {$lokasi->nama_lokasi} \nKoordinator: {$lokasi->koordinator}",
         ]);
         return redirect()->route('manajemen.lokasi')->with('success', 'Data lokasi berhasil diperbarui!');
@@ -75,7 +75,7 @@ class LokasiTambangController extends Controller
         AuditLog::create([
             'user_id' => auth()->id(),
             'aksi'    => 'Menghapus',
-            'modul'   => 'Manajemen Lokasi',
+            'modul'   => 'Manajemen Lokasi {$lokasi->nama_lokasi}',
             'detail'  => "Menghapus lokasi:\nNama: {$lokasi->nama_lokasi} \nKoordinator: {$lokasi->koordinator}",
         ]);
         return redirect()->route('manajemen.lokasi')->with('success', 'Lokasi tambang berhasil dihapus!');

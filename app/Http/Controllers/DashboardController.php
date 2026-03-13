@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ProduksiHarian;
 use Carbon\Carbon;
+use App\Models\Laporan;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index(Request $request)
     {
+        
         // --- DATA PERIODE SEKARANG (Minggu Ini) ---
         $startOfCurrentWeek = now()->startOfWeek();
         $endOfCurrentWeek = now()->endOfWeek();

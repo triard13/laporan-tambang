@@ -71,8 +71,8 @@ class LaporanController extends Controller
         AuditLog::create([ 
             'user_id' => auth()->id(),
             'aksi'    => 'Menambah',
-            'modul'   => 'Manajemen Laporan Harian',
-            'detail'  => "Penambahan laporan baru:\nId: {$produksi->id} \nOperator:". auth()->user()->nama_lengkap,
+            'modul'   => 'Manajemen Laporan',
+            'detail'  => "Laporan baru:\nId: {$produksi->id} \nOperator:". auth()->user()->nama_lengkap,
         ]);
 
         // 4. Kembalikan ke halaman form dengan pesan sukses
@@ -116,8 +116,8 @@ class LaporanController extends Controller
         AuditLog::create([ 
             'user_id' => auth()->id(),
             'aksi'    => 'Verivikasi'. $request->status_validasi,
-            'modul'   => 'Verifikasi Laporan Harian',
-            'detail'  => "Verifikasi laporan harian:\nId: {$laporan->id} \nSupervisor: " . auth()->user()->nama_lengkap,
+            'modul'   => 'Verifikasi Laporan',
+            'detail'  => "Verifikasi laporan:\nId: {$laporan->id} \nSupervisor: " . auth()->user()->nama_lengkap,
         ]);
 
         return redirect()->back()->with('success', 'Status laporan berhasil diubah menjadi: ' . $request->status_validasi);

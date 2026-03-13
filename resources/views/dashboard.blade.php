@@ -106,29 +106,28 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     
-            <div class="bg-white rounded-lg shadow-sm border border-gray-100 flex flex-col h-full">
+            <div class="lg:col-span-2 bg-white rounded-lg shadow-sm border border-gray-100 flex flex-col h-full">
                 <div class="px-5 py-3 border-b border-gray-100 flex justify-between items-center">
                     <h3 class="text-[12px] font-bold text-gray-700 uppercase tracking-tight">Grafik Produksi Harian</h3>
-                    <span class="text-[9px] bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter">Hari Ini</span>
+                    <span class="text-[12px] bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter">Hari Ini</span>
                 </div>
 
                 <div class="overflow-x-auto custom-scrollbar">
                     <table class="min-w-full divide-y divide-gray-100">
                         <thead class="bg-gray-50/50">
-                            <tr class="text-[9px] font-bold text-gray-400 uppercase tracking-widest text-left">
+                            <tr class="text-[12px] font-bold text-gray-400 uppercase tracking-widest text-left">
                                 <th class="px-4 py-3 whitespace-nowrap">Tanggal</th>
                                 <th class="px-4 py-3">Shift</th>
                                 <th class="px-4 py-3">Lokasi</th>
                                 <th class="px-4 py-3">Alat Berat</th>
                                 <th class="px-4 py-3 text-right">Produksi</th>
-                                <th class="px-4 py-3 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-50 bg-white">
                             @forelse($laporanProduksi as $lp)
-                            <tr class="text-[10px] text-gray-600 hover:bg-gray-50/80 transition-colors">
+                            <tr class="text-[12px] text-gray-600 hover:bg-gray-50/80 transition-colors">
                                 <td class="px-4 py-4 whitespace-nowrap font-bold text-gray-700">
                                     {{ \Carbon\Carbon::parse($lp->tanggal)->format('d M Y') }}
                                 </td>
@@ -140,9 +139,6 @@
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap font-bold text-right text-sm text-gray-900">
                                     {{ number_format($lp->volume, 0, ',', '.') }}
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap text-center">
-                                    <button class="bg-[#5a8d6e] text-white px-3 py-1 rounded-sm text-[9px] font-bold shadow-sm hover:bg-emerald-700 transition">Detail</button>
                                 </td>
                             </tr>
                             @empty
@@ -190,38 +186,44 @@
                     <table class="min-w-full divide-y divide-gray-50">
                         <thead class="bg-gray-50/50">
                             <tr class="text-[9px] font-bold text-gray-400 uppercase tracking-widest text-left">
-                                <th class="px-5 py-3">Tanggal / Shift</th>
-                                <th class="px-5 py-3">Lokasi / Alat</th>
-                                <th class="px-5 py-3 text-center">Status Verifikasi</th>
+                                <th class="px-3 py-3">Tanggal</th>
+                                <th class="px-2 py-3">Lokasi</th>
+                                <th class="px-2 py-3 text-center">Status Verifikasi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-50 bg-white">
                             @foreach($laporanTerakhir as $lt)
                             <tr class="text-[10px] text-gray-600 hover:bg-gray-50/80 transition-colors">
-                                <td class="px-5 py-4 whitespace-nowrap">
+                                <td class="px-3 py-1 whitespace-nowrap">
                                     <div class="font-bold text-gray-700 leading-tight">{{ \Carbon\Carbon::parse($lt->tanggal)->format('d M Y') }}</div>
                                     <div class="text-[8px] text-gray-400 font-normal uppercase tracking-tighter">Shift 1</div>
                                 </td>
-                                <td class="px-5 py-4 whitespace-nowrap">
+                                <td class="px-2 py-1 whitespace-nowrap">
                                     <div class="font-bold text-gray-800 leading-tight uppercase">{{ $lt->lokasi }}</div>
-                                    <div class="text-[8px] text-gray-400 font-medium tracking-tight truncate max-w-[100px]">{{ $lt->alatTambang->nama_alat ?? 'N/A' }}</div>
+                                    <div class="text-[8px] text-gray-400 font-medium tracking-tight truncate">{{ $lt->alatTambang->nama_alat ?? 'N/A' }}</div>
                                 </td>
-                                <td class="px-5 py-4 whitespace-nowrap">
-                                    <div class="flex items-center justify-center -space-x-px">
+                                <td class="px-2 py-1 whitespace-nowrap">
+                                    <div class="flex-1 py-4 flex flex-col items-center justify-center gap-1.5">
+    
                                         @if($lt->status_laporan == 'Disetujui')
-                                            <div class="flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-[#3e8e63] border border-emerald-100 rounded-l-sm font-bold text-[8px] uppercase tracking-tighter">
+                                            <div class="w-[85px] flex items-center justify-center gap-1 px-2 py-1 bg-emerald-50 text-[#3e8e63] border border-emerald-100 rounded-sm font-bold text-[8px] uppercase tracking-tighter">
                                                 <span class="w-2 h-2 bg-[#3e8e63] text-white rounded-full flex items-center justify-center text-[6px]">✔</span> DISETUJUI
                                             </div>
                                         @elseif($lt->status_laporan == 'Ditolak')
-                                            <div class="flex items-center gap-1 px-2.5 py-1 bg-red-50 text-red-600 border border-red-100 rounded-l-sm font-bold text-[8px] uppercase tracking-tighter">
+                                            <div class="w-[85px] flex items-center justify-center gap-1 px-2 py-1 bg-red-50 text-red-600 border border-red-100 rounded-sm font-bold text-[8px] uppercase tracking-tighter">
                                                 <span class="text-[8px]">✖</span> DITOLAK
                                             </div>
                                         @else
-                                            <div class="flex items-center gap-1 px-2.5 py-1 bg-amber-50 text-amber-600 border border-amber-100 rounded-l-sm font-bold text-[8px] uppercase tracking-tighter">
+                                            <div class="w-[85px] flex items-center justify-center gap-1 px-2 py-1 bg-amber-50 text-amber-600 border border-amber-100 rounded-sm font-bold text-[8px] uppercase tracking-tighter">
                                                 <span class="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse"></span> MENUNGGU
                                             </div>
                                         @endif
-                                        <button class="px-3 py-1 bg-[#5a8d6e] text-white border border-[#5a8d6e] rounded-r-sm font-bold text-[9px] hover:bg-emerald-700 transition">Detail</button>
+
+                                        @if($lt->status_laporan != 'Disetujui')
+                                            <a href="{{ route('laporan.edit', $lt->id) }}" class="w-[85px] inline-flex justify-center items-center px-2 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-[9px] font-bold rounded-sm shadow-sm transition">
+                                                Detail
+                                            </a>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>

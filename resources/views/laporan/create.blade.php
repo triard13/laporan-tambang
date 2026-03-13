@@ -59,23 +59,82 @@
                             <option value="Blok C">Blok C</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Alat Berat <span class="text-red-500">*</span></label>
-                        <div class="flex items-center gap-2 p-2 border border-gray-300 rounded-md bg-gray-50">
-                            <div class="bg-white p-1 rounded border shadow-sm">
-                                <img src="https://cdn-icons-png.flaticon.com/512/2345/2345437.png" class="w-8 h-8 opacity-75" alt="Icon Alat">
+                    <div x-data="{ 
+                        alatTerpilih: '{{ $alatTambang->first()->id ?? '' }}', 
+                        namaAlat: '{{ $alatTambang->first()->nama_alat ?? 'Pilih Alat' }}',
+                        tipeAlat: '{{ $alatTambang->first()->tipe_alat ?? '' }}',
+                        /* Default gambar: ambil dari database jika ada, jika tidak pakai icon default */
+                        gambarAlat: '{{ isset($alatTambang->first()->gambar) && $alatTambang->first()->gambar ? asset('storage/' . $alatTambang->first()->gambar) : 'https://cdn-icons-png.flaticon.com/512/2345/2345437.png' }}',
+                        dropdownBuka: false 
+                    }" class="relative">
+                        
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">
+                            Alat Berat <span class="text-red-500">*</span>
+                        </label>
+                        
+                        <input type="hidden" name="alat_tambang_id" x-model="alatTerpilih">
+
+                        <div class="flex items-center justify-between p-2.5 border border-gray-200 rounded-lg bg-white shadow-sm hover:border-[#509673] transition">
+                            
+                            <div class="flex items-center gap-4">
+                                <div class="bg-gray-50 p-2 rounded-md border border-gray-100 flex-shrink-0">
+                                    <img :src="gambarAlat" class="w-8 h-8 object-cover opacity-80" alt="Icon Alat">
+                                </div>
+                                
+                                <div class="flex flex-col">
+                                    <div class="text-[15px] font-bold text-[#1e293b] flex gap-1">
+                                        <span x-text="namaAlat"></span>
+                                        <span class="font-normal text-gray-500" x-text="tipeAlat ? '(' + tipeAlat + ')' : ''"></span>
+                                    </div>
+                                    <div class="text-[11px] font-bold text-gray-400 mt-0.5 tracking-wider uppercase">UNIT READY • 1 243 COL</div>
+                                </div>
                             </div>
-                            <div class="flex-1 min-w-0">
-                                <select name="alat_tambang_id" class="w-full border-none bg-transparent p-0 focus:ring-0 text-sm font-bold text-gray-700">
-                                    @foreach($alatTambang as $alat)
-                                        <option value="{{ $alat->id }}">{{ $alat->nama_alat }} ({{ $alat->tipe_alat }})</option>
-                                    @endforeach
-                                </select>
-                                <div class="text-[10px] text-gray-400 font-medium">UNIT READY • 1 243 COL</div>
+
+                            <div class="flex items-center gap-3 pr-1">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                                
+                                <button type="button" @click="dropdownBuka = !dropdownBuka" class="bg-[#509673] hover:bg-[#3f7b5d] text-white px-3.5 py-1.5 rounded-md text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                    EDIT
+                                </button>
                             </div>
-                            <button type="button" class="bg-emerald-600 text-white px-3 py-1 rounded text-[10px] font-bold flex items-center gap-1">
-                                ✎ EDIT
-                            </button>
+                        </div>
+
+                        <div x-show="dropdownBuka" 
+                            @click.away="dropdownBuka = false"
+                            x-transition:enter="transition ease-out duration-100"
+                            x-transition:enter-start="transform opacity-0 scale-95"
+                            x-transition:enter-end="transform opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-75"
+                            x-transition:leave-start="transform opacity-100 scale-100"
+                            x-transition:leave-end="transform opacity-0 scale-95"
+                            class="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-xl max-h-60 overflow-y-auto"
+                            style="display: none;">
+                            
+                            <ul class="py-1">
+                                @foreach($alatTambang as $alat)
+                                <li>
+                                    <button type="button" 
+                                            @click="
+                                                alatTerpilih = '{{ $alat->id }}'; 
+                                                namaAlat = '{{ addslashes($alat->nama_alat) }}'; 
+                                                tipeAlat = '{{ addslashes($alat->tipe_alat) }}'; 
+                                                /* Update gambar berdasarkan pilihan */
+                                                gambarAlat = '{{ $alat->gambar ? asset('storage/' . $alat->gambar) : 'https://cdn-icons-png.flaticon.com/512/2345/2345437.png' }}';
+                                                dropdownBuka = false;
+                                            "
+                                            class="w-full flex items-center gap-3 text-left px-4 py-3 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition border-b border-gray-50 last:border-b-0">
+                                        
+                                        <img src="{{ $alat->gambar ? asset('storage/' . $alat->gambar) : 'https://cdn-icons-png.flaticon.com/512/2345/2345437.png' }}" class="w-8 h-8 rounded object-cover border border-gray-100" alt="img">
+                                        
+                                        <div>
+                                            <div class="font-bold text-gray-800 text-sm">{{ $alat->nama_alat }}</div>
+                                            <div class="text-xs text-gray-500 mt-0.5">{{ $alat->tipe_alat }}</div>
+                                        </div>
+                                    </button>
+                                </li>
+                                @endforeach
+                            </ul>
                         </div>
                     </div>
                 </div>
