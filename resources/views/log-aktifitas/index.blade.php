@@ -77,10 +77,15 @@
                                 <div class="text-[11px] text-gray-400">{{ $log->created_at->format('H:i') }}</div>
                             </td>
                             <td class="px-6 py-4 flex items-center gap-3">
-                                <img src="https://ui-avatars.com/api/?name={{ urlencode($log->user->nama_lengkap ?? 'Sistem') }}&background=random" class="w-8 h-8 rounded-full border border-gray-200 shadow-sm" alt="Avatar">
+                                <img src="{{ isset($log->user) && $log->user->foto_profil ? asset('storage/' . $log->user->foto_profil) : 'https://ui-avatars.com/api/?name=' . urlencode($log->user->nama_lengkap ?? 'Sistem') . '&background=random&color=fff' }}" 
+                                    class="w-8 h-8 rounded-full border border-gray-200 shadow-sm object-cover" 
+                                    alt="Avatar">
+                                
                                 <div>
                                     <div class="font-bold text-gray-800">{{ $log->user->nama_lengkap ?? 'Pengguna Dihapus' }}</div>
-                                    <div class="text-[11px] text-gray-500">{{ $log->user->role ?? '-' }}</div>
+                                    <div class="text-[11px] text-gray-500">
+                                        {{ isset($log->user) ? ($log->user->getRoleNames()->first() ?? $log->user->role) : '-' }}
+                                    </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4">

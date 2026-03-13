@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -30,6 +31,18 @@ class ProfileController extends Controller
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
+        }
+
+        // --- Logika Upload Foto Profil ---
+        if ($request->hasFile('foto_profil')) {
+            // Hapus foto lama jika sudah ada
+            if ($request->user()->foto_profil) {
+                Storage::disk('public')->delete($request->user()->foto_profil);
+            }
+            
+            // Simpan foto baru ke folder 'profil' di storage/app/public
+            $path = $request->file('foto_profil')->store('profil', 'public');
+            $request->user()->foto_profil = $path;
         }
 
         $request->user()->save();

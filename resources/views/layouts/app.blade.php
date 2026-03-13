@@ -77,17 +77,44 @@
                         </svg>
                     </button>
 
-                    <div class="flex items-center gap-4">
-                        <span class="text-gray-700 font-medium text-sm lg:text-base">
-                            {{ Auth::user()->nama_lengkap }} ({{ Auth::user()->getRoleNames()->first() ?? Auth::user()->role }})
-                        </span>
-                        
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="text-red-500 hover:text-red-700 font-semibold text-sm">
-                                Logout
-                            </button>
-                        </form>
+                    <div class="relative" x-data="{ dropdownOpen: false }">
+                        <button @click="dropdownOpen = !dropdownOpen" class="flex items-center gap-2 focus:outline-none hover:bg-gray-50 p-1.5 rounded-md transition">
+                            <img class="w-8 h-8 rounded-full border border-gray-200 object-cover" 
+                                 src="{{ Auth::user()->foto_profil ? asset('storage/' . Auth::user()->foto_profil) : 'https://ui-avatars.com/api/?name='.urlencode(Auth::user()->nama_lengkap).'&background=random&color=fff' }}" 
+                                 alt="Avatar">
+                            
+                            <span class="text-sm font-bold text-gray-700 hidden sm:block">{{ Auth::user()->nama_lengkap }}</span>
+                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+
+                        <div x-show="dropdownOpen" 
+                             @click.away="dropdownOpen = false"
+                             x-transition:enter="transition ease-out duration-100"
+                             x-transition:enter-start="transform opacity-0 scale-95"
+                             x-transition:enter-end="transform opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-75"
+                             x-transition:leave-start="transform opacity-100 scale-100"
+                             x-transition:leave-end="transform opacity-0 scale-95"
+                             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 border border-gray-100 z-50"
+                             style="display: none;">
+                            
+                            <div class="block px-4 py-2 text-[11px] text-gray-400 border-b border-gray-50 uppercase font-bold tracking-wider">
+                                {{ Auth::user()->getRoleNames()->first() ?? Auth::user()->role }}
+                            </div>
+
+                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
+                                Profil Saya
+                            </a>
+
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-bold transition">
+                                    Keluar (Logout)
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </header>
 

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\DashboardController;
@@ -7,17 +8,15 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AlatTambangController;
 use App\Http\Controllers\LokasiTambangController;
 use App\Http\Controllers\AuditLogController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 
 Route::get('/', function () {
     return redirect()->route('login'); // Langsung arahkan ke halaman login
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
-
+// ==========================================
+// RUTE PROFIL UMUM (Bisa diakses semua yang login)
+// ==========================================
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -25,48 +24,67 @@ Route::middleware('auth')->group(function () {
 });
 
 // ==========================================
-// RUTE KHUSUS SISTEM LAPORAN TAMBANG
+// RUTE SISTEM LAPORAN TAMBANG (DILINDUNGI RBAC SPATIE)
 // ==========================================
+Route::middleware(['auth', 'verified'])->group(function () {
 
-// 1. Rute untuk Operator (dan Supervisor) -> Mengelola Input Laporan
-Route::middleware(['auth', 'role:Operator,Supervisor'])->group(function () {
-    Route::get('/input-laporan', [LaporanController::class, 'create'])->name('laporan.create');
-    Route::post('/input-laporan', [LaporanController::class, 'store'])->name('laporan.store');
+    // 1. Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->middleware('can:dashboard')
+        ->name('dashboard');
+
+    // 2. Modul Data Laporan (Input, Verifikasi, Riwayat)
+    Route::middleware('can:input')->group(function () {
+        Route::get('/input-laporan', [LaporanController::class, 'create'])->name('laporan.create');
+        Route::post('/input-laporan', [LaporanController::class, 'store'])->name('laporan.store');
+    });
+
+    Route::middleware('can:verifikasi')->group(function () {
+        Route::get('/verifikasi-laporan', [LaporanController::class, 'verifikasi'])->name('laporan.verifikasi');
+        Route::post('/verifikasi-laporan/{id}', [LaporanController::class, 'processVerifikasi'])->name('laporan.process_verifikasi');
+    });
+
+    Route::middleware('can:riwayat')->group(function () {
+        Route::get('/riwayat-laporan', [LaporanController::class, 'index'])->name('laporan.riwayat');
+        Route::get('/laporan/{id}/edit', [LaporanController::class, 'edit'])->name('laporan.edit');
+        Route::put('/laporan/{id}', [LaporanController::class, 'update'])->name('laporan.update');
+    });
+
+    // 3. Modul Manajemen (Pengguna, Alat, Lokasi)
+    Route::middleware('can:pengguna')->group(function () {
+        Route::get('/manajemen-pengguna', [UserController::class, 'index'])->name('manajemen.users');
+        Route::get('/manajemen-pengguna/tambah', [UserController::class, 'create'])->name('users.create');
+        Route::post('/manajemen-pengguna', [UserController::class, 'store'])->name('users.store');
+        Route::get('/manajemen-pengguna/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('/manajemen-pengguna/{id}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/manajemen-pengguna/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+    });
+
+    Route::middleware('can:alat')->group(function () {
+        Route::resource('alat', AlatTambangController::class)->names([
+            'index' => 'manajemen.alat',
+        ]);
+    });
+
+    Route::middleware('can:lokasi')->group(function () {
+        Route::resource('lokasi', LokasiTambangController::class)->names([
+            'index' => 'manajemen.lokasi',
+        ]);
+    });
+
+    // ==========================================
+    // RUTE KHUSUS SUPER ADMIN
+    // ==========================================
+    Route::middleware('role:Admin')->group(function () {
+        // Log Aktifitas
+        Route::get('/log-aktifitas', [AuditLogController::class, 'index'])->name('log.aktifitas');
+        
+        // Kontrol Akses (RBAC)
+        Route::get('/kontrol-akses', [RoleController::class, 'index'])->name('kontrol.akses');
+        Route::get('/kontrol-akses/{nama}/edit', [RoleController::class, 'edit'])->name('kontrol.edit');
+        Route::put('/kontrol-akses/{nama}', [RoleController::class, 'update'])->name('kontrol.update');
+    });
+
 });
 
-// 2. Rute Khusus Supervisor -> Verifikasi Laporan
-Route::middleware(['auth', 'role:Supervisor'])->group(function () {
-    Route::get('/verifikasi-laporan', [LaporanController::class, 'verifikasi'])->name('laporan.verifikasi');
-
-    Route::post('/verifikasi-laporan/{id}', [LaporanController::class, 'processVerifikasi'])->name('laporan.process_verifikasi');
-});
-
-// 3. Rute Khusus Admin -> Manajemen Master Data
-Route::middleware(['auth', 'role:Admin'])->group(function () {
-    Route::get('/manajemen-pengguna', [UserController::class, 'index'])->name('manajemen.users');
-    Route::get('/manajemen-pengguna/tambah', [UserController::class, 'create'])->name('users.create');
-    Route::post('/manajemen-pengguna', [UserController::class, 'store'])->name('users.store');
-    Route::get('/manajemen-pengguna/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
-    Route::put('/manajemen-pengguna/{id}', [UserController::class, 'update'])->name('users.update');
-    Route::delete('/manajemen-pengguna/{id}', [UserController::class, 'destroy'])->name('users.destroy');
-
-    Route::resource('alat', AlatTambangController::class)->names([
-        'index' => 'manajemen.alat',
-    ]);
-    
-    Route::resource('lokasi', LokasiTambangController::class)->names([
-        'index' => 'manajemen.lokasi',
-    ]);
-    Route::get('/log-aktifitas', [AuditLogController::class, 'index'])->name('log.aktifitas');
-    Route::get('/kontrol-akses', [RoleController::class, 'index'])->name('kontrol.akses');
-    Route::get('/kontrol-akses/{nama}/edit', [RoleController::class, 'edit'])->name('kontrol.edit');
-Route::put('/kontrol-akses/{nama}', [RoleController::class, 'update'])->name('kontrol.update');
-});
-
-// Rute Riwayat Laporan (Bisa diakses semua role yang login)
-Route::middleware(['auth'])->group(function () {
-    Route::get('/riwayat-laporan', [LaporanController::class, 'index'])->name('laporan.riwayat');
-    Route::get('/laporan/{id}/edit', [LaporanController::class, 'edit'])->name('laporan.edit');
-    Route::put('/laporan/{id}', [LaporanController::class, 'update'])->name('laporan.update');
-});
-require __DIR__.'/auth.php';
+require __DIR__.'/auth.php';    
