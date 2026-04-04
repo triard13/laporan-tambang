@@ -14,6 +14,16 @@ Route::get('/', function () {
     return redirect()->route('login'); // Langsung arahkan ke halaman login
 });
 
+Route::get('/link-storage', function () {
+    \Illuminate\Support\Facades\Artisan::call('storage:link');
+    return 'Storage berhasil disambung, Ndan!';
+});
+
+Route::get('/bersihkan-cache', function() {
+    \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+    return 'Cache berhasil disapu bersih, Ndan!';
+});
+
 // ==========================================
 // RUTE PROFIL UMUM (Bisa diakses semua yang login)
 // ==========================================
