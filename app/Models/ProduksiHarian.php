@@ -8,7 +8,8 @@ class ProduksiHarian extends Model
 {
     protected $fillable = [
         'user_id', 'alat_tambang_id', 'tanggal', 'shift', 'material', 
-        'volume', 'jarak_angkut', 'jam_operasi', 'lokasi', 'bahan_bakar', 'cuaca', 'hambatan_operasional', 'catatan_tambahan', 'status_laporan'
+        'volume', 'jarak_angkut', 'jam_operasi', 'lokasi', 'bahan_bakar', 'cuaca', 
+        'hambatan_operasional', 'catatan_tambahan', 'status_laporan'
     ];
 
     public function user()

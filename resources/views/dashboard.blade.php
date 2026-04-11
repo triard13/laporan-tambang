@@ -105,6 +105,41 @@
                 </div>
             </div>
         </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800">TARGET vs REALISASI PRODUKSI BATU BOULDER PT. BGA</h3>
+                
+                <form action="{{ route('dashboard') }}" method="GET" class="flex items-center space-x-2">
+                    <label class="font-medium text-gray-700">Filter:</label>
+                    
+                    <select name="bulan" class="border border-gray-300 rounded-md p-2" onchange="this.form.submit()">
+                        <option value="01" {{ $bulan == '01' ? 'selected' : '' }}>Januari</option>
+                        <option value="02" {{ $bulan == '02' ? 'selected' : '' }}>Februari</option>
+                        <option value="03" {{ $bulan == '03' ? 'selected' : '' }}>Maret</option>
+                        <option value="04" {{ $bulan == '04' ? 'selected' : '' }}>April</option>
+                        <option value="05" {{ $bulan == '05' ? 'selected' : '' }}>Mei</option>
+                        <option value="06" {{ $bulan == '06' ? 'selected' : '' }}>Juni</option>
+                        <option value="07" {{ $bulan == '07' ? 'selected' : '' }}>Juli</option>
+                        <option value="08" {{ $bulan == '08' ? 'selected' : '' }}>Agustus</option>
+                        <option value="09" {{ $bulan == '09' ? 'selected' : '' }}>September</option>
+                        <option value="10" {{ $bulan == '10' ? 'selected' : '' }}>Oktober</option>
+                        <option value="11" {{ $bulan == '11' ? 'selected' : '' }}>November</option>
+                        <option value="12" {{ $bulan == '12' ? 'selected' : '' }}>Desember</option>
+                    </select>
+
+                    <select name="tahun" class="border border-gray-300 rounded-md p-2" onchange="this.form.submit()">
+                        @foreach($tahunTersedia as $t)
+                            <option value="{{ $t }}" {{ $tahun == $t ? 'selected' : '' }}>{{ $t }}</option>
+                        @endforeach
+                    </select>
+                </form>
+            </div>
+
+            <div style="position: relative; height:400px; width:100%">
+                <canvas id="produksiChart"></canvas>
+            </div>
+        </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     
@@ -348,5 +383,116 @@
                 });
             }
         });
+    </script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const hari = @json($hariArray);
+        const planData = @json($planData);
+        const actualData = @json($actualData);
+        const achievementData = @json($achievementData);
+
+        // 2. Ambil elemen Canvas
+        const ctx = document.getElementById('produksiChart').getContext('2d');
+
+        // 3. Render Chart
+        new Chart(ctx, {
+            type: 'bar', // Tipe dasar grafik
+            data: {
+                labels: hari,
+                datasets: [
+                    {
+                        label: 'PLAN',
+                        data: planData,
+                        backgroundColor: '#00BFFF', // Biru Terang
+                        yAxisID: 'y', // Menggunakan sumbu Y Kiri
+                        order: 2 // Urutan tumpukan (di belakang garis)
+                    },
+                    {
+                        label: 'ACTUAL',
+                        data: actualData,
+                        backgroundColor: '#000000', // Hitam
+                        yAxisID: 'y', // Menggunakan sumbu Y Kiri
+                        order: 3
+                    },
+                    {
+                        label: 'ACHIEVEMENT %',
+                        data: achievementData,
+                        type: 'line', // Ubah tipe khusus untuk dataset ini menjadi Garis
+                        borderColor: '#FF0000', // Merah
+                        backgroundColor: '#FF0000',
+                        borderWidth: 2,
+                        tension: 0, // 0 = Garis lurus patah-patah seperti di Excel
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        yAxisID: 'y1', // Menggunakan sumbu Y Kanan
+                        order: 1 // Tampilkan di posisi paling depan
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            // Tambahkan simbol % pada tooltip khusus untuk Achievement
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) { label += ': '; }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y;
+                                    if (context.dataset.yAxisID === 'y1') { label += '%'; }
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Tanggal' },
+                        grid: { display: false } // Hilangkan garis grid vertikal agar bersih
+                    },
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: { display: true, text: 'Volume' },
+                        suggestedMax: 2500,
+                        ticks: {
+                            // Format angka ribuan (titik)
+                            callback: function(value) {
+                                return value.toLocaleString('id-ID');
+                            }
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: { display: true, text: 'Achievement (%)' },
+                        suggestedMax: 180,
+                        grid: { 
+                            drawOnChartArea: false // Jangan tumpuk garis grid Y kanan dengan Y kiri
+                        },
+                        ticks: {
+                            // Tambahkan simbol %
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
     </script>
 </x-app-layout>

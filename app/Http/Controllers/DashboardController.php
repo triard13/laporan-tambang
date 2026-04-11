@@ -84,11 +84,64 @@ class DashboardController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(4, ['*'], 'page_akhir') // Ambil 4 data per halaman
             ->withQueryString();
+            
+        // 1. Ambil input bulan & tahun (Default ke bulan & tahun saat ini)
+        $bulan = $request->input('bulan', date('m'));
+        $tahun = $request->input('tahun', date('Y'));
+
+        // Hitung jumlah hari dalam bulan & tahun yang dipilih
+        $jumlahHari = Carbon::createFromDate($tahun, $bulan, 1)->daysInMonth;
+
+        // 2. Tarik Data Aktual dari Database berdasarkan Bulan DAN Tahun
+        $produksiAktual = ProduksiHarian::selectRaw('DAY(tanggal) as hari, SUM(volume) as total_volume')
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $tahun)
+            ->where('status_laporan', 'disetujui') // Filter Wajib!
+            ->groupBy('hari')
+            ->pluck('total_volume', 'hari')
+            ->toArray();
+
+        // 3. Ambil daftar TAHUN unik yang ada di tabel untuk Dropdown
+        $tahunTersedia = ProduksiHarian::selectRaw('YEAR(tanggal) as tahun')
+            ->distinct()
+            ->orderBy('tahun', 'desc') // Urutkan tahun dari yang terbaru
+            ->pluck('tahun');
+
+        // Jika tabel masih kosong, minimal kita punya tahun saat ini
+        if($tahunTersedia->isEmpty()) {
+            $tahunTersedia = collect([date('Y')]);
+        }
+
+        // 4. Siapkan Array Kosong untuk Chart.js
+        $hariArray = [];
+        $planData = [];
+        $actualData = [];
+        $achievementData = [];
+
+        $targetHarian = 1250;
+
+        for ($i = 1; $i <= $jumlahHari; $i++) {
+            $hariArray[] = $i;
+            $planData[] = $targetHarian;
+
+            $aktual = isset($produksiAktual[$i]) ? (float) $produksiAktual[$i] : 0;
+            $actualData[] = $aktual;
+
+            $persentase = $targetHarian > 0 ? round(($aktual / $targetHarian) * 100) : 0;
+            $achievementData[] = $persentase;
+        }
 
         return view('dashboard', compact(
             'totalProduksi', 'totalProduksiHariIni', 'laporanDisetujui', 'laporanPending', 'laporanDitolak', 
             'growthProduksi', 'growthLaporan', 'percPending',
-            'chartData', 'lokasiData', 'laporanProduksi', 'laporanTerakhir', 'range'
+            'chartData', 'lokasiData', 'laporanProduksi', 'laporanTerakhir', 'range',
+            'hariArray',
+            'planData',
+            'actualData',
+            'achievementData',
+            'bulan',
+            'tahun',
+            'tahunTersedia'
         ));
     }
 }
