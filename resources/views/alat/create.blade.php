@@ -23,7 +23,7 @@
     <div class="max-w-4xl mx-auto py-6 px-4">
         <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-8">
             <div class="flex justify-between items-center mb-6 pb-4 border-b">
-                <h3 class="font-bold text-gray-700 uppercase">Borang Tambah Alat</h3>
+                <h3 class="font-bold text-gray-700 uppercase">Formulir Tambah Alat</h3>
                 <a href="{{ route('manajemen.alat') }}" class="text-sm text-gray-500 hover:text-gray-700">&larr; Kembali</a>
             </div>
 
@@ -32,8 +32,8 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Kod Alat *</label>
-                        <input type="text" name="kode_alat" value="{{ old('kode_alat') }}" required placeholder="Cth: Exca-01" class="w-full px-4 py-2 border rounded-md text-sm">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Kode Alat</label>
+                        <input type="text" disabled placeholder="(Dibuat otomatis berdasarkan Jenis Alat)" class="w-full px-4 py-2 border border-gray-200 bg-gray-50 rounded-md text-sm text-gray-500 cursor-not-allowed">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Nama Alat *</label>
@@ -44,10 +44,16 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Jenis Alat *</label>
-                        <input type="text" name="tipe_alat" value="{{ old('tipe_alat') }}" required placeholder="Cth: Excavator" class="w-full px-4 py-2 border rounded-md text-sm">
+                        <select name="tipe_alat" required class="w-full px-4 py-2 border rounded-md text-sm">
+                            <option value="">-- Pilih Jenis Alat --</option>
+                            <option value="Dump Truck" {{ old('tipe_alat') == 'Dump Truck' ? 'selected' : '' }}>Dump Truck</option>
+                            <option value="Excavator" {{ old('tipe_alat') == 'Excavator' ? 'selected' : '' }}>Excavator</option>
+                            <option value="Dozer" {{ old('tipe_alat') == 'Dozer' ? 'selected' : '' }}>Dozer</option>
+                            <option value="Grader" {{ old('tipe_alat') == 'Grader' ? 'selected' : '' }}>Grader</option>
+                        </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Kapasiti (Opsional)</label>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Kapasitas (Opsional)</label>
                         <input type="text" name="kapasitas" value="{{ old('kapasitas') }}" placeholder="Cth: 1,243 BCM" class="w-full px-4 py-2 border rounded-md text-sm">
                     </div>
                 </div>
@@ -62,7 +68,7 @@
                         <select name="status" class="w-full px-4 py-2 border rounded-md text-sm font-bold text-gray-700">
                             <option value="Aktif">Aktif</option>
                             <option value="Perawatan">Perawatan</option>
-                            <option value="Rusak">Rosak</option>
+                            <option value="Rusak">Rusak</option>
                         </select>
                     </div>
                 </div>

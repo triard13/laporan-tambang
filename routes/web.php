@@ -55,6 +55,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::middleware('can:riwayat')->group(function () {
+        Route::get('/riwayat-laporan/export', [LaporanController::class, 'export'])->name('laporan.export');
         Route::get('/riwayat-laporan', [LaporanController::class, 'index'])->name('laporan.riwayat');
         Route::get('/laporan/{id}/edit', [LaporanController::class, 'edit'])->name('laporan.edit');
         Route::put('/laporan/{id}', [LaporanController::class, 'update'])->name('laporan.update');

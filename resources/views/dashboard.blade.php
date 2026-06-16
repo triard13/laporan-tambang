@@ -94,7 +94,7 @@
                     <div class="flex flex-col">
                         <div class="flex items-center gap-2 mb-1">
                             <span class="w-3 h-3 rounded-sm {{ $index == 0 ? 'bg-[#2D5A43]' : ($index == 1 ? 'bg-[#66D391]' : 'bg-emerald-100') }}"></span>
-                            <span class="text-[11px] font-bold text-gray-700 uppercase tracking-tight">{{ $ld->lokasi }}</span>
+                            <span class="text-[11px] font-bold text-gray-700 uppercase tracking-tight">{{ $ld->lokasiTambang->nama_lokasi ?? 'N/A' }}</span>
                         </div>
                         <div class="pl-5">
                             <span class="text-xs font-bold text-gray-900 block">{{ number_format($ld->total, 0, ',', '.') }}</span>
@@ -167,7 +167,7 @@
                                     {{ \Carbon\Carbon::parse($lp->tanggal)->format('d M Y') }}
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap">Shift 1</td>
-                                <td class="px-4 py-4 whitespace-nowrap font-medium">{{ $lp->lokasi }}</td>
+                                <td class="px-4 py-4 whitespace-nowrap font-medium">{{ $lp->lokasiTambang->nama_lokasi ?? '-' }}</td>
                                 <td class="px-4 py-4 whitespace-nowrap">
                                     <div class="font-bold text-gray-800 leading-tight">{{ $lp->alatTambang->nama_alat ?? 'Exca-01' }}</div>
                                     <div class="text-[8px] text-gray-400 font-normal italic">({{ $lp->alatTambang->tipe_alat ?? 'Excavator' }})</div>
@@ -234,7 +234,7 @@
                                     <div class="text-[8px] text-gray-400 font-normal uppercase tracking-tighter">Shift 1</div>
                                 </td>
                                 <td class="px-2 py-1 whitespace-nowrap">
-                                    <div class="font-bold text-gray-800 leading-tight uppercase">{{ $lt->lokasi }}</div>
+                                    <div class="font-bold text-gray-800 leading-tight uppercase">{{ $lt->lokasiTambang->nama_lokasi ?? '-' }}</div>
                                     <div class="text-[8px] text-gray-400 font-medium tracking-tight truncate">{{ $lt->alatTambang->nama_alat ?? 'N/A' }}</div>
                                 </td>
                                 <td class="px-2 py-1 whitespace-nowrap">
@@ -356,7 +356,7 @@
 
             // --- Pie Chart (Distribusi Lokasi) ---
             const canvasLoc = document.getElementById('locChart');
-            const locLabels = {!! json_encode($lokasiData->pluck('lokasi')) !!};
+            const locLabels = {!! json_encode($lokasiData->map(function($item) { return $item->lokasiTambang->nama_lokasi ?? 'N/A'; })) !!};
             const locValues = {!! json_encode($lokasiData->pluck('total')) !!};
 
             if (canvasLoc && locLabels.length > 0) {

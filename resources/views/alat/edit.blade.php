@@ -19,10 +19,9 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Kode Alat <span class="text-red-500">*</span></label>
-                        <input type="text" name="kode_alat" value="{{ old('kode_alat', $alat->kode_alat) }}" required 
-                               class="w-full px-4 py-2 border @error('kode_alat') border-red-500 @else border-gray-300 @enderror rounded-md focus:ring-blue-500 text-sm">
-                        @error('kode_alat') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Kode Alat</label>
+                        <input type="text" name="kode_alat" value="{{ $alat->kode_alat }}" readonly 
+                               class="w-full px-4 py-2 border border-gray-200 bg-gray-50 rounded-md text-sm text-gray-500 cursor-not-allowed">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Nama Alat <span class="text-red-500">*</span></label>

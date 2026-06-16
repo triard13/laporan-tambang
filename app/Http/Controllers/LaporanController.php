@@ -9,13 +9,37 @@ use App\Models\Hambatan;
 use App\Models\Validasi;
 use App\Models\AuditLog;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\LaporanExport;
 
 class LaporanController extends Controller
 {
-    // Menampilkan halaman riwayat laporan
-    public function index()
+    // Export ke Excel
+    public function export(Request $request)
     {
-        $laporans = ProduksiHarian::with(['user', 'alatTambang'])->orderBy('created_at', 'desc')->get();
+        $filters = $request->only(['tanggal_mulai', 'tanggal_akhir', 'status_laporan']);
+        $fileName = 'Laporan-Produksi-Tambang_' . date('Y-m-d_H-i-s') . '.xlsx';
+        
+        return Excel::download(new LaporanExport($filters), $fileName);
+    }
+
+    // Menampilkan halaman riwayat laporan
+    public function index(Request $request)
+    {
+        $query = ProduksiHarian::with(['user', 'alatTambang', 'lokasiTambang'])->orderBy('tanggal', 'desc')->orderBy('created_at', 'desc');
+
+        // Apply filters
+        if ($request->filled('tanggal_mulai')) {
+            $query->whereDate('tanggal', '>=', $request->tanggal_mulai);
+        }
+        if ($request->filled('tanggal_akhir')) {
+            $query->whereDate('tanggal', '<=', $request->tanggal_akhir);
+        }
+        if ($request->filled('status_laporan')) {
+            $query->where('status_laporan', $request->status_laporan);
+        }
+
+        $laporans = $query->paginate(20)->withQueryString();
         
         return view('laporan.index', compact('laporans'));
     }
@@ -23,10 +47,11 @@ class LaporanController extends Controller
     // Menampilkan form input laporan harian
     public function create()
     {
-        // Mengambil semua data alat tambang dari database untuk ditampilkan di dropdown
-        $alatTambang = AlatTambang::all();
+        // Hanya ambil alat yang berjenis Dump Truck karena ini laporan hauling
+        $alatTambang = AlatTambang::where('tipe_alat', 'Dump Truck')->get();
+        $lokasiTambang = \App\Models\LokasiTambang::all();
         
-        return view('laporan.create', compact('alatTambang'));
+        return view('laporan.create', compact('alatTambang', 'lokasiTambang'));
     }
 
     public function store(Request $request)
@@ -35,8 +60,9 @@ class LaporanController extends Controller
         $request->validate([
             'tanggal' => 'required|date',
             'shift' => 'required',
-            'lokasi' => 'required',
+            'lokasi_tambang_id' => 'required',
             'alat_tambang_id' => 'required',
+            'material' => 'required|string',
             'volume' => 'required|numeric',
             'bahan_bakar' => 'required|numeric',
         ]);
@@ -47,7 +73,8 @@ class LaporanController extends Controller
             'alat_tambang_id' => $request->alat_tambang_id,
             'tanggal' => $request->tanggal,
             'shift' => $request->shift,
-            'lokasi' => $request->lokasi,
+            'lokasi_tambang_id' => $request->lokasi_tambang_id,
+            'material' => $request->material,
             'volume' => $request->volume,
             'jarak_angkut' => $request->jarak, // sesuaikan name di HTML
             'jam_operasi' => $request->jam_operasi,
@@ -126,14 +153,15 @@ class LaporanController extends Controller
     public function edit($id)
     {
         $laporan = ProduksiHarian::findOrFail($id);
-        $alats = AlatTambang::all();
+        $alats = AlatTambang::where('tipe_alat', 'Dump Truck')->get();
+        $lokasiTambang = \App\Models\LokasiTambang::all();
         
         // Keamanan: Jangan biarkan orang mengedit laporan yang sudah disetujui
         if($laporan->status_laporan != 'Pending') {
             return redirect()->back()->with('error', 'Laporan yang sudah diproses tidak bisa diedit!');
         }
 
-        return view('laporan.edit', compact('laporan', 'alats'));
+        return view('laporan.edit', compact('laporan', 'alats', 'lokasiTambang'));
     }
 
     public function update(Request $request, $id)
@@ -144,14 +172,17 @@ class LaporanController extends Controller
         $request->validate([
             'tanggal' => 'required|date',
             'volume' => 'required|numeric',
+            'material' => 'required|string',
+            'lokasi_tambang_id' => 'required',
             // ... validasi lainnya ...
         ]);
 
         $laporan->update([
             'tanggal' => $request->tanggal,
             'shift' => $request->shift,
-            'lokasi' => $request->lokasi,
+            'lokasi_tambang_id' => $request->lokasi_tambang_id,
             'alat_tambang_id' => $request->alat_tambang_id,
+            'material' => $request->material,
             'volume' => $request->volume,
             'jarak_angkut' => $request->jarak,
             'jam_operasi' => $request->jam_operasi,

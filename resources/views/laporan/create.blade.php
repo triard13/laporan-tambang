@@ -53,10 +53,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Lokasi Tambang <span class="text-red-500">*</span></label>
-                        <select name="lokasi" class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 focus:ring-emerald-500 focus:border-emerald-500 text-sm">
-                            <option value="Blok A">Blok A</option>
-                            <option value="Blok B">Blok B</option>
-                            <option value="Blok C">Blok C</option>
+                        <select name="lokasi_tambang_id" required class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 focus:ring-emerald-500 focus:border-emerald-500 text-sm">
+                            <option value="">-- Pilih Lokasi --</option>
+                            @foreach($lokasiTambang as $lokasi)
+                                <option value="{{ $lokasi->id }}">{{ $lokasi->nama_lokasi }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div x-data="{ 
@@ -64,7 +65,7 @@
                         namaAlat: '{{ $alatTambang->first()->nama_alat ?? 'Pilih Alat' }}',
                         tipeAlat: '{{ $alatTambang->first()->tipe_alat ?? '' }}',
                         /* Default gambar: ambil dari database jika ada, jika tidak pakai icon default */
-                        gambarAlat: '{{ isset($alatTambang->first()->gambar) && $alatTambang->first()->gambar ? asset('storage/' . $alatTambang->first()->gambar) : 'https://cdn-icons-png.flaticon.com/512/2345/2345437.png' }}',
+                        gambarAlat: '{{ isset($alatTambang->first()->gambar) && $alatTambang->first()->gambar ? asset('storage/' . $alatTambang->first()->gambar) : asset('truck-icon.svg') }}',
                         dropdownBuka: false 
                     }" class="relative">
                         
@@ -81,12 +82,12 @@
                                     <img :src="gambarAlat" class="w-8 h-8 object-cover opacity-80" alt="Icon Alat">
                                 </div>
                                 
-                                <div class="flex flex-col">
-                                    <div class="text-[15px] font-bold text-[#1e293b] flex gap-1">
-                                        <span x-text="namaAlat"></span>
-                                        <span class="font-normal text-gray-500" x-text="tipeAlat ? '(' + tipeAlat + ')' : ''"></span>
+                                <div class="flex flex-col truncate">
+                                    <div class="text-[14px] font-bold text-[#1e293b] flex flex-wrap gap-1 items-center">
+                                        <span x-text="namaAlat" class="truncate max-w-[200px]"></span>
+                                        <span class="font-normal text-gray-500 text-xs truncate" x-text="tipeAlat ? '(' + tipeAlat + ')' : ''"></span>
                                     </div>
-                                    <div class="text-[11px] font-bold text-gray-400 mt-0.5 tracking-wider uppercase">UNIT READY • 1 243 COL</div>
+                                    <div class="text-[10px] font-bold text-gray-400 mt-0.5 tracking-wider uppercase">UNIT READY • 1 243 COL</div>
                                 </div>
                             </div>
 
@@ -120,12 +121,12 @@
                                                 namaAlat = '{{ addslashes($alat->nama_alat) }}'; 
                                                 tipeAlat = '{{ addslashes($alat->tipe_alat) }}'; 
                                                 /* Update gambar berdasarkan pilihan */
-                                                gambarAlat = '{{ $alat->gambar ? asset('storage/' . $alat->gambar) : 'https://cdn-icons-png.flaticon.com/512/2345/2345437.png' }}';
+                                                gambarAlat = '{{ $alat->gambar ? asset('storage/' . $alat->gambar) : asset('truck-icon.svg') }}';
                                                 dropdownBuka = false;
                                             "
                                             class="w-full flex items-center gap-3 text-left px-4 py-3 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition border-b border-gray-50 last:border-b-0">
                                         
-                                        <img src="{{ $alat->gambar ? asset('storage/' . $alat->gambar) : 'https://cdn-icons-png.flaticon.com/512/2345/2345437.png' }}" class="w-8 h-8 rounded object-cover border border-gray-100" alt="img">
+                                        <img src="{{ $alat->gambar ? asset('storage/' . $alat->gambar) : asset('truck-icon.svg') }}" class="w-8 h-8 rounded object-cover border border-gray-100" alt="img">
                                         
                                         <div>
                                             <div class="font-bold text-gray-800 text-sm">{{ $alat->nama_alat }}</div>
@@ -150,44 +151,47 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-2">Produksi OB [BCM] <span class="text-red-500">*</span></label>
-                            <input type="number" name="volume" placeholder="2,500" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-2">Jam Kerja <span class="text-emerald-500">●</span></label>
-                            <select name="jam_operasi" class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 text-sm">
-                                <option value="8">8 Jam</option>
-                                <option value="12">12 Jam</option>
-                            </select>
-                        </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-gray-100 pt-6">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Material <span class="text-red-500">*</span></label>
+                        <select name="material" class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 text-sm focus:ring-emerald-500 focus:border-emerald-500" required>
+                            <option value="Overburden">Overburden (OB)</option>
+                            <option value="Batu Bara">Batu Bara</option>
+                        </select>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-2">Jarak Angkut [m] <span class="text-emerald-500">●</span></label>
-                            <select name="jarak" class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 text-sm">
-                                <option value="500">500 m</option>
-                                <option value="1000">1000 m</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-2">Konsumsi BBM [L] <span class="text-red-500">*</span></label>
-                            <input type="number" name="bahan_bakar" placeholder="220" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 text-sm">
-                        </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Volume [BCM/Ton] <span class="text-red-500">*</span></label>
+                        <input type="number" step="0.01" name="volume" required placeholder="2500" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Jarak Angkut [m] <span class="text-emerald-500">●</span></label>
+                        <input type="number" name="jarak" required placeholder="1500" class="w-full px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-emerald-500 focus:border-emerald-500 text-sm">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Jam Kerja <span class="text-emerald-500">●</span></label>
+                        <select name="jam_operasi" class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 text-sm focus:ring-emerald-500 focus:border-emerald-500">
+                            <option value="8">8 Jam</option>
+                            <option value="12">12 Jam</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Konsumsi BBM [L] <span class="text-red-500">*</span></label>
+                        <input type="number" name="bahan_bakar" placeholder="220" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500 text-sm">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-gray-100 pt-6">
+                    <div class="md:col-span-2">
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Catatan Tambahan (Opsional)</label>
-                        <textarea name="catatan" rows="2" placeholder="Catatan tambahan atau kendala lapangan..." class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 text-sm"></textarea>
+                        <textarea name="catatan" rows="2" placeholder="Catatan tambahan atau kendala lapangan..." class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500 text-sm"></textarea>
                     </div>
                     <div class="space-y-4">
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Kondisi Cuaca <span class="text-emerald-500">●</span></label>
-                            <select name="cuaca" class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 text-sm">
+                            <select name="cuaca" class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 text-sm focus:ring-emerald-500 focus:border-emerald-500">
                                 <option value="Cerah">Cerah</option>
                                 <option value="Hujan">Hujan</option>
                                 <option value="Berawan">Berawan</option>
@@ -195,7 +199,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Hambatan Operasional</label>
-                            <select name="hambatan" class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 text-sm font-bold text-emerald-600">
+                            <select name="hambatan" class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 text-sm font-bold text-emerald-600 focus:ring-emerald-500 focus:border-emerald-500">
                                 <option value="Tidak Ada">TIDAK ADA</option>
                                 <option value="Breakdown">BREAKDOWN</option>
                                 <option value="Slippery">SLIPPERY</option>

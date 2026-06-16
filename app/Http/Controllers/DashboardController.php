@@ -66,9 +66,10 @@ class DashboardController extends Controller
             ->orderBy('date', 'asc')
             ->get();
 
-        $lokasiData = ProduksiHarian::select('lokasi', DB::raw('SUM(volume) as total'))
+        $lokasiData = ProduksiHarian::with('lokasiTambang')
+            ->select('lokasi_tambang_id', DB::raw('SUM(volume) as total'))
             ->where('status_laporan', 'Disetujui')
-            ->groupBy('lokasi')->get();
+            ->groupBy('lokasi_tambang_id')->get();
 
         // Ambil data untuk tabel kiri dengan Pagination (misal 3 data per halaman)
         // Kita beri nama query string 'page_laporan' agar tidak bentrok dengan pagination lain
@@ -92,17 +93,21 @@ class DashboardController extends Controller
         // Hitung jumlah hari dalam bulan & tahun yang dipilih
         $jumlahHari = Carbon::createFromDate($tahun, $bulan, 1)->daysInMonth;
 
+        $driver = DB::connection()->getDriverName();
+        $dayRaw = $driver === 'sqlite' ? "CAST(strftime('%d', tanggal) AS INTEGER)" : 'DAY(tanggal)';
+        $yearRaw = $driver === 'sqlite' ? "CAST(strftime('%Y', tanggal) AS INTEGER)" : 'YEAR(tanggal)';
+
         // 2. Tarik Data Aktual dari Database berdasarkan Bulan DAN Tahun
-        $produksiAktual = ProduksiHarian::selectRaw('DAY(tanggal) as hari, SUM(volume) as total_volume')
+        $produksiAktual = ProduksiHarian::selectRaw("$dayRaw as hari, SUM(volume) as total_volume")
             ->whereMonth('tanggal', $bulan)
             ->whereYear('tanggal', $tahun)
-            ->where('status_laporan', 'disetujui') // Filter Wajib!
+            ->where('status_laporan', 'Disetujui') // Filter Wajib!
             ->groupBy('hari')
             ->pluck('total_volume', 'hari')
             ->toArray();
 
         // 3. Ambil daftar TAHUN unik yang ada di tabel untuk Dropdown
-        $tahunTersedia = ProduksiHarian::selectRaw('YEAR(tanggal) as tahun')
+        $tahunTersedia = ProduksiHarian::selectRaw("$yearRaw as tahun")
             ->distinct()
             ->orderBy('tahun', 'desc') // Urutkan tahun dari yang terbaru
             ->pluck('tahun');

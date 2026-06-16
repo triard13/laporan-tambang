@@ -24,7 +24,6 @@ class AlatTambangController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kode_alat' => 'required|string|max:50|unique:alat_tambangs,kode_alat',
             'nama_alat' => 'required|string|max:255',
             'tipe_alat' => 'required|string|max:100',
             'kapasitas' => 'nullable|string|max:100',
@@ -35,7 +34,32 @@ class AlatTambangController extends Controller
 
         $data = $request->all();
 
-        // Proses muat naik gambar jika ada
+        // Generate Kode Alat Otomatis
+        $prefix = 'ALT';
+        if ($data['tipe_alat'] == 'Dump Truck') {
+            $prefix = 'DT';
+        } elseif ($data['tipe_alat'] == 'Excavator') {
+            $prefix = 'EXC';
+        } elseif ($data['tipe_alat'] == 'Dozer') {
+            $prefix = 'DZ';
+        } elseif ($data['tipe_alat'] == 'Grader') {
+            $prefix = 'GRD';
+        }
+
+        $lastAlat = AlatTambang::where('kode_alat', 'like', $prefix . '-%')
+                               ->orderBy('id', 'desc')->first();
+        
+        if ($lastAlat) {
+            // Ambil angka terakhir setelah prefix dan strip
+            $lastNumber = (int) substr($lastAlat->kode_alat, strlen($prefix) + 1);
+            $newNumber = $lastNumber + 1;
+        } else {
+            $newNumber = 1;
+        }
+
+        $data['kode_alat'] = $prefix . '-' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
+
+        // Proses upload gambar jika ada
         if ($request->hasFile('gambar')) {
             $data['gambar'] = $request->file('gambar')->store('alat', 'public');
         }
@@ -48,23 +72,22 @@ class AlatTambangController extends Controller
             'detail'  => "Penambahan alat baru:\nKode: {$alat->kode_alat} \nNama: {$alat->nama_alat}",
         ]);
 
-        return redirect()->route('manajemen.alat')->with('success', 'Data alat berat berjaya ditambah!');
+        return redirect()->route('manajemen.alat')->with('success', 'Data alat berat berhasil ditambahkan!');
     }
 
-    // 4. Paparkan borang Edit
+    // 4. Tampilkan formulir Edit
     public function edit($id)
     {
         $alat = AlatTambang::findOrFail($id);
         return view('alat.edit', compact('alat'));
     }
 
-    // 5. Kemas kini data Alat
+    // 5. Perbarui data Alat
     public function update(Request $request, $id)
     {
         $alat = AlatTambang::findOrFail($id);
 
         $request->validate([
-            'kode_alat' => 'required|string|max:50|unique:alat_tambangs,kode_alat,'.$alat->id,
             'nama_alat' => 'required|string|max:255',
             'tipe_alat' => 'required|string|max:100',
             'kapasitas' => 'nullable|string|max:100',
@@ -74,10 +97,11 @@ class AlatTambangController extends Controller
         ]);
 
         $data = $request->all();
+        unset($data['kode_alat']); // Jangan biarkan kode_alat diupdate
 
-        // Jika ada gambar baru dimuat naik
+        // Jika ada gambar baru diupload
         if ($request->hasFile('gambar')) {
-            // Padam gambar lama jika wujud
+            // Hapus gambar lama jika ada
             if ($alat->gambar) {
                 Storage::disk('public')->delete($alat->gambar);
             }
@@ -89,12 +113,12 @@ class AlatTambangController extends Controller
 
         AuditLog::create([
             'user_id' => auth()->id(),
-            'aksi'    => 'Memoerbarui',
+            'aksi'    => 'Memperbarui',
             'modul'   => 'Manajemen Alat',
-            'detail'  => "Memperbarui alat baru:\nKode: {$alat->kode_alat} \nNama: {$alat->nama_alat}",
+            'detail'  => "Memperbarui alat:\nKode: {$alat->kode_alat} \nNama: {$alat->nama_alat}",
         ]);
 
-        return redirect()->route('manajemen.alat')->with('success', 'Data alat berat berjaya dikemas kini!');
+        return redirect()->route('manajemen.alat')->with('success', 'Data alat berat berhasil diperbarui!');
     }
 
     // 6. Hapus data Alat
@@ -102,7 +126,7 @@ class AlatTambangController extends Controller
     {
         $alat = AlatTambang::findOrFail($id);
         
-        // Padam gambar dari storage jika wujud
+        // Hapus gambar dari storage jika ada
         if ($alat->gambar) {
             Storage::disk('public')->delete($alat->gambar);
         }
@@ -113,9 +137,9 @@ class AlatTambangController extends Controller
             'user_id' => auth()->id(),
             'aksi'    => 'Menghapus',
             'modul'   => 'Manajemen Alat',
-            'detail'  => "Menghapus alat baru:\nKode: {$alat->kode_alat} \nNama: {$alat->nama_alat}",
+            'detail'  => "Menghapus alat:\nKode: {$alat->kode_alat} \nNama: {$alat->nama_alat}",
         ]);
 
-        return redirect()->route('manajemen.alat')->with('success', 'Data alat berat berjaya dipadam!');
+        return redirect()->route('manajemen.alat')->with('success', 'Data alat berat berhasil dihapus!');
     }
 }

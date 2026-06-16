@@ -1,10 +1,52 @@
 <x-app-layout>
     <x-slot name="header">
-        Riwayat Laporan Produksi Tambang
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Riwayat Laporan Produksi Tambang</h2>
+            <a href="{{ route('laporan.export', request()->query()) }}" class="inline-flex items-center px-4 py-2 bg-emerald-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-emerald-700 transition ease-in-out duration-150 shadow-sm">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Ekspor Excel
+            </a>
+        </div>
     </x-slot>
 
+    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
+        <div class="p-6 text-gray-900">
+            <form action="{{ route('laporan.riwayat') }}" method="GET" class="flex flex-col md:flex-row gap-4 items-end">
+                <div class="w-full md:w-1/4">
+                    <label for="tanggal_mulai" class="block text-sm font-medium text-gray-700">Mulai Tanggal</label>
+                    <input type="date" name="tanggal_mulai" id="tanggal_mulai" value="{{ request('tanggal_mulai') }}" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                </div>
+                <div class="w-full md:w-1/4">
+                    <label for="tanggal_akhir" class="block text-sm font-medium text-gray-700">Sampai Tanggal</label>
+                    <input type="date" name="tanggal_akhir" id="tanggal_akhir" value="{{ request('tanggal_akhir') }}" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                </div>
+                <div class="w-full md:w-1/4">
+                    <label for="status_laporan" class="block text-sm font-medium text-gray-700">Status Laporan</label>
+                    <select name="status_laporan" id="status_laporan" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                        <option value="">Semua Status</option>
+                        <option value="Disetujui" {{ request('status_laporan') == 'Disetujui' ? 'selected' : '' }}>Disetujui</option>
+                        <option value="Pending" {{ request('status_laporan') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="Ditolak" {{ request('status_laporan') == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
+                        <option value="Revisi" {{ request('status_laporan') == 'Revisi' ? 'selected' : '' }}>Revisi</option>
+                    </select>
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                        Filter
+                    </button>
+                    @if(request()->anyFilled(['tanggal_mulai', 'tanggal_akhir', 'status_laporan']))
+                        <a href="{{ route('laporan.riwayat') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 transition ease-in-out duration-150">
+                            Reset
+                        </a>
+                    @endif
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-        <div class="p-6 bg-white border-b border-gray-200">
+        <div class="p-6 text-gray-900">
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
             
         @if(session('success'))
                         <div class="px-6 pt-4">
@@ -63,7 +105,7 @@
                                     {{ $laporan->shift }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $laporan->lokasi }}
+                                    {{ $laporan->lokasiTambang->nama_lokasi ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <div class="font-medium text-gray-900">{{ $laporan->alatTambang->nama_alat ?? '-' }}</div>
@@ -109,6 +151,9 @@
                 </table>
             </div>
 
+            <div class="mt-4">
+                {{ $laporans->links() }}
+            </div>
         </div>
     </div>
 </x-app-layout>

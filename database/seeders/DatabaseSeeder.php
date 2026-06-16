@@ -13,32 +13,37 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(RolePermissionSeeder::class);
+
         // Membuat akun Admin
-        User::create([
+        $admin = User::create([
             'nama_lengkap' => 'Administrator Sistem',
             'email' => 'admin@tambang.com',
             'nomor_hp' => '081100001111',
             'role' => 'Admin',
             'password' => Hash::make('password'), // passwordnya: password
         ]);
+        $admin->assignRole('Admin');
 
         // Membuat akun Supervisor
-        User::create([
+        $supervisor = User::create([
             'nama_lengkap' => 'Agus Wijaya', // Mengambil nama dari desain UI proposal Anda
             'email' => 'supervisor@tambang.com',
             'nomor_hp' => '081100002222',
             'role' => 'Supervisor',
             'password' => Hash::make('password'),
         ]);
+        $supervisor->assignRole('Supervisor');
 
         // Membuat akun Operator
-        User::create([
+        $operatorUser = User::create([
                 'nama_lengkap' => 'Joko Prasetyo', // Mengambil nama dari desain UI proposal Anda
                 'email' => 'operator@tambang.com',
                 'nomor_hp' => '081100003333',
                 'role' => 'Operator',
                 'password' => Hash::make('password'),
             ]);
+        $operatorUser->assignRole('Operator');
 
             $alat = \App\Models\AlatTambang::firstOrCreate(['nama_alat' => 'Exca-01 : CAT 320D'], [
             'tipe_alat' => 'Excavator',
