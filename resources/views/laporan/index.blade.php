@@ -12,17 +12,17 @@
     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
         <div class="p-6 text-gray-900">
             <form action="{{ route('laporan.riwayat') }}" method="GET" class="flex flex-col md:flex-row gap-4 items-end">
-                <div class="w-full md:w-1/4">
+                <div class="w-full md:w-[22%]">
                     <label for="tanggal_mulai" class="block text-sm font-medium text-gray-700">Mulai Tanggal</label>
-                    <input type="date" name="tanggal_mulai" id="tanggal_mulai" value="{{ request('tanggal_mulai') }}" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                    <input type="date" name="tanggal_mulai" id="tanggal_mulai" value="{{ request('tanggal_mulai') }}" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm h-[42px]">
                 </div>
-                <div class="w-full md:w-1/4">
+                <div class="w-full md:w-[22%]">
                     <label for="tanggal_akhir" class="block text-sm font-medium text-gray-700">Sampai Tanggal</label>
-                    <input type="date" name="tanggal_akhir" id="tanggal_akhir" value="{{ request('tanggal_akhir') }}" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                    <input type="date" name="tanggal_akhir" id="tanggal_akhir" value="{{ request('tanggal_akhir') }}" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm h-[42px]">
                 </div>
-                <div class="w-full md:w-1/4">
+                <div class="w-full md:w-[22%]">
                     <label for="status_laporan" class="block text-sm font-medium text-gray-700">Status Laporan</label>
-                    <select name="status_laporan" id="status_laporan" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                    <select name="status_laporan" id="status_laporan" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm h-[42px]">
                         <option value="">Semua Status</option>
                         <option value="Disetujui" {{ request('status_laporan') == 'Disetujui' ? 'selected' : '' }}>Disetujui</option>
                         <option value="Pending" {{ request('status_laporan') == 'Pending' ? 'selected' : '' }}>Pending</option>
@@ -30,12 +30,21 @@
                         <option value="Revisi" {{ request('status_laporan') == 'Revisi' ? 'selected' : '' }}>Revisi</option>
                     </select>
                 </div>
-                <div class="flex gap-2">
-                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                <div class="w-full md:w-[15%]">
+                    <label for="per_page" class="block text-sm font-medium text-gray-700">Tampilkan</label>
+                    <select name="per_page" id="per_page" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm h-[42px]">
+                        <option value="10" {{ request('per_page') == '10' ? 'selected' : '' }}>10 Baris</option>
+                        <option value="20" {{ request('per_page') == '20' ? 'selected' : '' }}>20 Baris</option>
+                        <option value="50" {{ request('per_page') == '50' ? 'selected' : '' }}>50 Baris</option>
+                        <option value="100" {{ request('per_page') == '100' ? 'selected' : '' }}>100 Baris</option>
+                    </select>
+                </div>
+                <div class="flex gap-2 mb-[1px]">
+                    <button type="submit" class="inline-flex items-center justify-center px-4 h-[42px] bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
                         Filter
                     </button>
-                    @if(request()->anyFilled(['tanggal_mulai', 'tanggal_akhir', 'status_laporan']))
-                        <a href="{{ route('laporan.riwayat') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 transition ease-in-out duration-150">
+                    @if(request()->anyFilled(['tanggal_mulai', 'tanggal_akhir', 'status_laporan', 'per_page']))
+                        <a href="{{ route('laporan.riwayat') }}" class="inline-flex items-center justify-center px-4 h-[42px] bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 transition ease-in-out duration-150">
                             Reset
                         </a>
                     @endif
@@ -152,7 +161,7 @@
             </div>
 
             <div class="mt-4">
-                {{ $laporans->links() }}
+                {{ $laporans->links('vendor.pagination.green') }}
             </div>
         </div>
     </div>

@@ -47,7 +47,9 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <div class="lg:col-span-2 flex flex-col gap-6">
+                <!-- Card 1: Grafik Produksi Harian -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 flex-none">
                 <div class="flex justify-between items-center mb-4">
                     <h4 class="font-bold text-gray-700 flex items-center gap-2">
                         <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
@@ -76,6 +78,52 @@
                     @endif
                 </div>
             </div>
+
+            <!-- Card 2: Laporan Menunggu Verifikasi Hari Ini -->
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 flex-1 flex flex-col">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-bold text-gray-700 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></span>
+                        Menunggu Verifikasi (Hari Ini)
+                    </h4>
+                    <a href="{{ route('laporan.verifikasi') }}" class="text-[10px] bg-amber-50 text-amber-600 hover:bg-amber-100 px-3 py-1.5 rounded-full font-bold transition">LIHAT SEMUA</a>
+                </div>
+                
+                <div class="overflow-x-auto custom-scrollbar flex-1">
+                    <table class="min-w-full divide-y divide-gray-50">
+                        <thead class="bg-gray-50/50">
+                            <tr class="text-[9px] font-bold text-gray-400 uppercase tracking-widest text-left">
+                                <th class="px-3 py-2">Operator</th>
+                                <th class="px-3 py-2">Lokasi</th>
+                                <th class="px-3 py-2">Alat Berat</th>
+                                <th class="px-3 py-2 text-right">Volume</th>
+                                <th class="px-3 py-2 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-50 bg-white">
+                            @forelse($laporanPendingHariIni as $pending)
+                            <tr class="text-[10px] text-gray-600 hover:bg-gray-50/80 transition-colors">
+                                <td class="px-3 py-2 whitespace-nowrap font-bold text-gray-800">{{ $pending->user->nama_lengkap ?? '-' }}</td>
+                                <td class="px-3 py-2 whitespace-nowrap uppercase">{{ $pending->lokasiTambang->nama_lokasi ?? '-' }}</td>
+                                <td class="px-3 py-2 whitespace-nowrap">
+                                    <div class="font-bold text-gray-700">{{ $pending->alatTambang->nama_alat ?? '-' }}</div>
+                                </td>
+                                <td class="px-3 py-2 whitespace-nowrap text-right font-bold text-emerald-600">{{ number_format($pending->volume, 0, ',', '.') }} <span class="font-normal text-[8px] text-gray-400">BCM</span></td>
+                                <td class="px-3 py-2 whitespace-nowrap text-center">
+                                    <a href="{{ route('laporan.verifikasi') }}" class="text-emerald-600 hover:text-emerald-700 font-bold text-[9px] uppercase hover:underline">Proses</a>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="5" class="px-4 py-6 text-center text-gray-400 italic text-[10px]">Belum ada laporan masuk hari ini yang menunggu verifikasi.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
 
             <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 flex flex-col h-full">
                 <div class="flex justify-between items-center mb-6">
@@ -108,12 +156,12 @@
         
         <div class="bg-white p-6 rounded-lg shadow-md mb-6">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold text-gray-800">TARGET vs REALISASI PRODUKSI BATU BOULDER PT. BGA</h3>
+                <h3 class="text-xl font-bold text-gray-800 uppercase tracking-tight">Target vs Realisasi Produksi (BCM)</h3>
                 
                 <form action="{{ route('dashboard') }}" method="GET" class="flex items-center space-x-2">
                     <label class="font-medium text-gray-700">Filter:</label>
                     
-                    <select name="bulan" class="border border-gray-300 rounded-md p-2" onchange="this.form.submit()">
+                    <select name="bulan" class="border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm focus:ring-emerald-500 focus:border-emerald-500" onchange="this.form.submit()">
                         <option value="01" {{ $bulan == '01' ? 'selected' : '' }}>Januari</option>
                         <option value="02" {{ $bulan == '02' ? 'selected' : '' }}>Februari</option>
                         <option value="03" {{ $bulan == '03' ? 'selected' : '' }}>Maret</option>
@@ -128,7 +176,7 @@
                         <option value="12" {{ $bulan == '12' ? 'selected' : '' }}>Desember</option>
                     </select>
 
-                    <select name="tahun" class="border border-gray-300 rounded-md p-2" onchange="this.form.submit()">
+                    <select name="tahun" class="border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm focus:ring-emerald-500 focus:border-emerald-500" onchange="this.form.submit()">
                         @foreach($tahunTersedia as $t)
                             <option value="{{ $t }}" {{ $tahun == $t ? 'selected' : '' }}>{{ $t }}</option>
                         @endforeach
@@ -210,89 +258,40 @@
             </div>
 
             <div class="bg-white rounded-lg shadow-sm border border-gray-100 flex flex-col h-full">
-                <div class="px-5 py-3 border-b border-gray-100 flex justify-between items-center">
-                    <h3 class="text-[12px] font-bold text-gray-700 uppercase tracking-tight">Laporan Terakhir</h3>
-                    <div class="flex items-center gap-1">
-                        <svg class="w-3.5 h-3.5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                    </div>
+                <div class="px-5 py-3 border-b border-gray-100 flex justify-between items-center bg-gradient-to-r from-amber-50 to-white">
+                    <h3 class="text-[12px] font-bold text-amber-700 uppercase tracking-tight">🏆 Top 5 Operator Terproduktif</h3>
                 </div>
                 
-                <div class="overflow-x-auto custom-scrollbar">
+                <div class="overflow-x-auto custom-scrollbar flex-1">
                     <table class="min-w-full divide-y divide-gray-50">
                         <thead class="bg-gray-50/50">
                             <tr class="text-[9px] font-bold text-gray-400 uppercase tracking-widest text-left">
-                                <th class="px-3 py-3">Tanggal</th>
-                                <th class="px-2 py-3">Lokasi</th>
-                                <th class="px-2 py-3 text-center">Status Verifikasi</th>
+                                <th class="px-3 py-3 w-8">#</th>
+                                <th class="px-2 py-3">Operator</th>
+                                <th class="px-2 py-3 text-right">Total Produksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-50 bg-white">
-                            @foreach($laporanTerakhir as $lt)
+                            @foreach($topOperators as $index => $operator)
                             <tr class="text-[10px] text-gray-600 hover:bg-gray-50/80 transition-colors">
-                                <td class="px-3 py-1 whitespace-nowrap">
-                                    <div class="font-bold text-gray-700 leading-tight">{{ \Carbon\Carbon::parse($lt->tanggal)->format('d M Y') }}</div>
-                                    <div class="text-[8px] text-gray-400 font-normal uppercase tracking-tighter">Shift 1</div>
+                                <td class="px-3 py-2 whitespace-nowrap font-bold {{ $index < 3 ? 'text-amber-500' : 'text-gray-400' }}">
+                                    {{ $index + 1 }}
                                 </td>
-                                <td class="px-2 py-1 whitespace-nowrap">
-                                    <div class="font-bold text-gray-800 leading-tight uppercase">{{ $lt->lokasiTambang->nama_lokasi ?? '-' }}</div>
-                                    <div class="text-[8px] text-gray-400 font-medium tracking-tight truncate">{{ $lt->alatTambang->nama_alat ?? 'N/A' }}</div>
+                                <td class="px-2 py-2 whitespace-nowrap">
+                                    <div class="font-bold text-gray-800 leading-tight uppercase">{{ $operator->user->nama_lengkap ?? 'N/A' }}</div>
                                 </td>
-                                <td class="px-2 py-1 whitespace-nowrap">
-                                    <div class="flex-1 py-4 flex flex-col items-center justify-center gap-1.5">
-    
-                                        @if($lt->status_laporan == 'Disetujui')
-                                            <div class="w-[85px] flex items-center justify-center gap-1 px-2 py-1 bg-emerald-50 text-[#3e8e63] border border-emerald-100 rounded-sm font-bold text-[8px] uppercase tracking-tighter">
-                                                <span class="w-2 h-2 bg-[#3e8e63] text-white rounded-full flex items-center justify-center text-[6px]">✔</span> DISETUJUI
-                                            </div>
-                                        @elseif($lt->status_laporan == 'Ditolak')
-                                            <div class="w-[85px] flex items-center justify-center gap-1 px-2 py-1 bg-red-50 text-red-600 border border-red-100 rounded-sm font-bold text-[8px] uppercase tracking-tighter">
-                                                <span class="text-[8px]">✖</span> DITOLAK
-                                            </div>
-                                        @else
-                                            <div class="w-[85px] flex items-center justify-center gap-1 px-2 py-1 bg-amber-50 text-amber-600 border border-amber-100 rounded-sm font-bold text-[8px] uppercase tracking-tighter">
-                                                <span class="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse"></span> MENUNGGU
-                                            </div>
-                                        @endif
-
-                                        @if($lt->status_laporan != 'Disetujui')
-                                            <a href="{{ route('laporan.edit', $lt->id) }}" class="w-[85px] inline-flex justify-center items-center px-2 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-[9px] font-bold rounded-sm shadow-sm transition">
-                                                Detail
-                                            </a>
-                                        @endif
-                                    </div>
+                                <td class="px-2 py-2 whitespace-nowrap text-right">
+                                    <div class="font-bold text-emerald-600 text-xs">{{ number_format($operator->total_volume, 0, ',', '.') }} <span class="text-[8px] text-gray-400 font-normal">BCM</span></div>
                                 </td>
                             </tr>
                             @endforeach
+                            @if(count($topOperators) == 0)
+                            <tr>
+                                <td colspan="3" class="px-4 py-8 text-center text-gray-400 italic text-[10px]">Belum ada data produksi bulan ini.</td>
+                            </tr>
+                            @endif
                         </tbody>
                     </table>
-                </div>
-
-                <div class="mt-auto px-5 py-3 bg-white border-t border-gray-50 flex justify-center items-center">
-                    <div class="flex items-center gap-2">
-                        @if ($laporanTerakhir->onFirstPage())
-                            <span class="p-1 border border-gray-100 rounded text-gray-200 cursor-not-allowed">
-                                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                            </span>
-                        @else
-                            <a href="{{ $laporanTerakhir->previousPageUrl() }}" class="p-1 border border-gray-200 rounded text-gray-500 hover:bg-gray-50">
-                                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                            </a>
-                        @endif
-
-                        <span class="text-[10px] font-bold text-gray-400 mx-1">{{ $laporanTerakhir->currentPage() }}</span>
-
-                        @if ($laporanTerakhir->hasMorePages())
-                            <a href="{{ $laporanTerakhir->nextPageUrl() }}" class="p-1 border border-gray-200 rounded text-gray-500 hover:bg-gray-50">
-                                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                            </a>
-                        @else
-                            <span class="p-1 border border-gray-100 rounded text-gray-200 cursor-not-allowed">
-                                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                            </span>
-                        @endif
-                        
-                        <a href="{{ $laporanTerakhir->nextPageUrl() }}" class="text-[9px] font-bold text-gray-700 ml-1 uppercase tracking-tighter {{ !$laporanTerakhir->hasMorePages() ? 'opacity-30 cursor-not-allowed' : 'hover:underline' }}">Next</a>
-                    </div>
                 </div>
             </div>
         </div>
@@ -320,7 +319,7 @@
             
             // --- 1. Line Chart (Produksi Harian) ---
             const canvasProd = document.getElementById('prodChart');
-            const dataLabels = {!! json_encode($chartData->pluck('date')) !!};
+            const dataLabels = {!! json_encode($chartData->map(function($d) { return \Carbon\Carbon::parse($d->date)->format('d M'); })) !!};
             const dataValues = {!! json_encode($chartData->pluck('total')) !!};
 
             if (canvasProd && dataLabels.length > 0) {
@@ -367,8 +366,8 @@
                         labels: locLabels,
                         datasets: [{
                             data: locValues,
-                            // Warna Hijau sesuai gambar yang Anda kirim
-                            backgroundColor: ['#2D5A43', '#66D391', '#D1FAE5'], 
+                            // Menggunakan palet warna kontras yang profesional
+                            backgroundColor: ['#3b82f6', '#f59e0b', '#ef4444', '#10b981', '#8b5cf6', '#06b6d4'], 
                             borderWidth: 4, // Memberi jarak putih antar slice (seperti di gambar)
                             borderColor: '#ffffff'
                         }]

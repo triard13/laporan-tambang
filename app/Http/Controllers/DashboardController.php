@@ -80,12 +80,24 @@ class DashboardController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(3, ['*'], 'page_laporan');
 
-        // Data untuk tabel kanan (Laporan Terakhir) tetap ambil 5 saja tanpa pagination
-        $laporanTerakhir = ProduksiHarian::with(['user', 'alatTambang'])
+        // Top 5 Operator Terproduktif Bulan Ini
+        $topOperators = ProduksiHarian::with('user')
+            ->select('user_id', DB::raw('SUM(volume) as total_volume'))
+            ->where('status_laporan', 'Disetujui')
+            ->whereMonth('tanggal', date('m'))
+            ->whereYear('tanggal', date('Y'))
+            ->groupBy('user_id')
+            ->orderBy('total_volume', 'desc')
+            ->limit(5)
+            ->get();
+        // Laporan Masuk Hari Ini (Pending)
+        $laporanPendingHariIni = ProduksiHarian::with(['user', 'alatTambang', 'lokasiTambang'])
+            ->where('status_laporan', 'Pending')
+            ->whereDate('tanggal', \Carbon\Carbon::today())
             ->orderBy('created_at', 'desc')
-            ->paginate(4, ['*'], 'page_akhir') // Ambil 4 data per halaman
-            ->withQueryString();
-            
+            ->limit(5)
+            ->get();
+
         // 1. Ambil input bulan & tahun (Default ke bulan & tahun saat ini)
         $bulan = $request->input('bulan', date('m'));
         $tahun = $request->input('tahun', date('Y'));
@@ -123,13 +135,19 @@ class DashboardController extends Controller
         $actualData = [];
         $achievementData = [];
 
-        $targetHarian = 1250;
+        // Simulasi Target: Rata-rata realisasi + 10%
+        $actualsForAvg = array_filter($produksiAktual, function($val) { return $val > 0; });
+        $avgActual = count($actualsForAvg) > 0 ? array_sum($actualsForAvg) / count($actualsForAvg) : 0;
+        $targetHarian = $avgActual > 0 ? round($avgActual * 1.1) : 1250;
 
         for ($i = 1; $i <= $jumlahHari; $i++) {
             $hariArray[] = $i;
-            $planData[] = $targetHarian;
-
+            
             $aktual = isset($produksiAktual[$i]) ? (float) $produksiAktual[$i] : 0;
+            
+            // Hanya tampilkan plan jika hari ini atau sebelumnya, atau jika ada data aktual
+            // Tapi karena plan biasanya selalu ada sepanjang bulan, kita set plan statis
+            $planData[] = $targetHarian;
             $actualData[] = $aktual;
 
             $persentase = $targetHarian > 0 ? round(($aktual / $targetHarian) * 100) : 0;
@@ -139,7 +157,7 @@ class DashboardController extends Controller
         return view('dashboard', compact(
             'totalProduksi', 'totalProduksiHariIni', 'laporanDisetujui', 'laporanPending', 'laporanDitolak', 
             'growthProduksi', 'growthLaporan', 'percPending',
-            'chartData', 'lokasiData', 'laporanProduksi', 'laporanTerakhir', 'range',
+            'chartData', 'lokasiData', 'laporanProduksi', 'topOperators', 'laporanPendingHariIni', 'range',
             'hariArray',
             'planData',
             'actualData',
