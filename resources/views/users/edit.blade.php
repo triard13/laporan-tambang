@@ -15,12 +15,19 @@
 
             <form action="{{ route('users.update', $user->id) }}" method="POST" class="p-8 space-y-6">
                 @csrf
-                @method('PUT') <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                @method('PUT')
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Nama Lengkap <span class="text-red-500">*</span></label>
                         <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap', $user->nama_lengkap) }}" required 
                                class="w-full px-4 py-2 border @error('nama_lengkap') border-red-500 @else border-gray-300 @enderror rounded-md focus:ring-blue-500 text-sm">
                         @error('nama_lengkap') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">NRP / NIK</label>
+                        <input type="text" name="nrp" value="{{ old('nrp', $user->nrp) }}" 
+                               class="w-full px-4 py-2 border @error('nrp') border-red-500 @else border-gray-300 @enderror rounded-md focus:ring-blue-500 text-sm">
+                        @error('nrp') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
                     </div>
                 </div>
 
@@ -32,6 +39,15 @@
                         @error('email') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
                     </div>
                     <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Nomor HP / WhatsApp</label>
+                        <input type="text" name="nomor_hp" value="{{ old('nomor_hp', $user->nomor_hp) }}" 
+                               class="w-full px-4 py-2 border @error('nomor_hp') border-red-500 @else border-gray-300 @enderror rounded-md focus:ring-blue-500 text-sm">
+                        @error('nomor_hp') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Hak Akses (Role) <span class="text-red-500">*</span></label>
                         <select name="role" required class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 focus:ring-blue-500 text-sm font-bold text-gray-700">
                             <option value="Admin" {{ old('role', $user->role) == 'Admin' ? 'selected' : '' }}>Admin (Administrator Sistem)</option>
@@ -39,6 +55,20 @@
                             <option value="Operator" {{ old('role', $user->role) == 'Operator' ? 'selected' : '' }}>Operator (Input Laporan)</option>
                         </select>
                         @error('role') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Jabatan Spesifik</label>
+                        <input type="text" name="jabatan" value="{{ old('jabatan', $user->jabatan) }}" 
+                               class="w-full px-4 py-2 border @error('jabatan') border-red-500 @else border-gray-300 @enderror rounded-md focus:ring-blue-500 text-sm">
+                        @error('jabatan') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Status Karyawan <span class="text-red-500">*</span></label>
+                        <select name="status_karyawan" required class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 focus:ring-blue-500 text-sm font-bold text-gray-700">
+                            <option value="Aktif" {{ old('status_karyawan', $user->status_karyawan) == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                            <option value="Non-Aktif" {{ old('status_karyawan', $user->status_karyawan) == 'Non-Aktif' ? 'selected' : '' }}>Non-Aktif</option>
+                        </select>
+                        @error('status_karyawan') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
                     </div>
                 </div>
 

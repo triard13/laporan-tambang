@@ -1,11 +1,11 @@
 <section>
     <header>
         <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Profile Information') }}
+            {{ __('Informasi Profil') }}
         </h2>
 
         <p class="mt-1 text-sm text-gray-600">
-            {{ __("Update your account's profile information and email address.") }}
+            {{ __('Perbarui informasi profil dan kontak Anda. Beberapa data yang bersifat administratif hanya dapat diubah oleh Administrator.') }}
         </p>
     </header>
 
@@ -25,26 +25,36 @@
 
         <div>
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
+            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full bg-gray-50 text-gray-500" :value="old('email', $user->email)" required readonly />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
+            <p class="text-xs text-gray-500 mt-1">Alamat email digunakan untuk login dan tidak dapat diubah sendiri.</p>
+        </div>
 
-            @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
-                <div>
-                    <p class="text-sm mt-2 text-gray-800">
-                        {{ __('Your email address is unverified.') }}
+        <div>
+            <x-input-label for="nomor_hp" :value="__('Nomor HP / WhatsApp')" />
+            <x-text-input id="nomor_hp" name="nomor_hp" type="text" class="mt-1 block w-full" :value="old('nomor_hp', $user->nomor_hp)" />
+            <x-input-error class="mt-2" :messages="$errors->get('nomor_hp')" />
+        </div>
 
-                        <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            {{ __('Click here to re-send the verification email.') }}
-                        </button>
-                    </p>
+        <hr class="border-gray-200">
 
-                    @if (session('status') === 'verification-link-sent')
-                        <p class="mt-2 font-medium text-sm text-green-600">
-                            {{ __('A new verification link has been sent to your email address.') }}
-                        </p>
-                    @endif
-                </div>
-            @endif
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <x-input-label :value="__('NRP / NIK')" />
+                <x-text-input type="text" class="mt-1 block w-full bg-gray-50 text-gray-500" :value="$user->nrp ?? '-'" disabled />
+            </div>
+            <div>
+                <x-input-label :value="__('Hak Akses (Role)')" />
+                <x-text-input type="text" class="mt-1 block w-full bg-gray-50 text-gray-500" :value="$user->role ?? '-'" disabled />
+            </div>
+            <div>
+                <x-input-label :value="__('Jabatan Spesifik')" />
+                <x-text-input type="text" class="mt-1 block w-full bg-gray-50 text-gray-500" :value="$user->jabatan ?? '-'" disabled />
+            </div>
+            <div>
+                <x-input-label :value="__('Status Karyawan')" />
+                <x-text-input type="text" class="mt-1 block w-full bg-gray-50 text-gray-500" :value="$user->status_karyawan ?? '-'" disabled />
+            </div>
         </div>
 
         <div>
@@ -66,7 +76,7 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            <x-primary-button>{{ __('Simpan') }}</x-primary-button>
 
             @if (session('status') === 'profile-updated')
                 <p
@@ -74,8 +84,8 @@
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
-                >{{ __('Saved.') }}</p>
+                    class="text-sm text-emerald-600 font-bold"
+                >{{ __('Tersimpan.') }}</p>
             @endif
         </div>
     </form>

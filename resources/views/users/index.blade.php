@@ -53,9 +53,10 @@
                         <thead class="bg-gray-50">
                             <tr class="text-xs font-bold text-gray-500 uppercase tracking-wider text-left">
                                 <th class="px-6 py-4">No</th>
-                                <th class="px-6 py-4">Nama</th>
-                                <th class="px-6 py-4">Email</th>
-                                <th class="px-6 py-4">Role</th>
+                                <th class="px-6 py-4">Nama & NRP</th>
+                                <th class="px-6 py-4">Kontak</th>
+                                <th class="px-6 py-4">Role & Jabatan</th>
+                                <th class="px-6 py-4">Status</th>
                                 <th class="px-6 py-4 text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -63,21 +64,35 @@
                             @forelse($users as $index => $user)
                             <tr class="text-sm text-gray-700 hover:bg-gray-50 transition">
                                 <td class="px-6 py-4">{{ $users->firstItem() + $index }}</td>
-                                <td class="px-6 py-4 font-medium">{{ $user->nama_lengkap ?? $user->name }}</td>
-                                <td class="px-6 py-4">{{ $user->email }}</td>
                                 <td class="px-6 py-4">
-                                    {{-- Logika Warna Badge Role (Menggunakan class standar Tailwind) --}}
-                                    @php
-                                        $roleClass = match($user->role) {
-                                            'Admin' => 'bg-emerald-500',
-                                            'Supervisor' => 'bg-emerald-500',
-                                            'Operator' => 'bg-emerald-500',
-                                            default => 'bg-gray-500'
-                                        };
-                                    @endphp
-                                    <span class="px-3 py-1 text-white text-xs font-bold rounded shadow-sm {{ $roleClass }}">
+                                    <div class="font-bold text-gray-800">{{ $user->nama_lengkap ?? $user->name }}</div>
+                                    @if($user->nrp)
+                                        <div class="text-xs text-gray-500 mt-1">NRP: {{ $user->nrp }}</div>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-gray-700">{{ $user->email }}</div>
+                                    @if($user->nomor_hp)
+                                        <div class="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                                            {{ $user->nomor_hp }}
+                                        </div>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 text-emerald-800 bg-emerald-100 text-[10px] font-bold rounded shadow-sm">
                                         {{ $user->role ?? 'No Role' }}
                                     </span>
+                                    @if($user->jabatan)
+                                        <div class="text-xs text-gray-500 mt-1">{{ $user->jabatan }}</div>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4">
+                                    @if($user->status_karyawan == 'Aktif' || !$user->status_karyawan)
+                                        <span class="px-2 py-1 text-green-700 bg-green-100 border border-green-200 text-xs rounded-full">Aktif</span>
+                                    @else
+                                        <span class="px-2 py-1 text-red-700 bg-red-100 border border-red-200 text-xs rounded-full">Non-Aktif</span>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex justify-center gap-2">

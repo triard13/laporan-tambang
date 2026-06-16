@@ -45,8 +45,12 @@ class UserController extends Controller
         $request->validate([
             'nama_lengkap' => 'required|string|max:255', // Sesuaikan dengan kolom di DB (name / nama_lengkap)
             'email'        => 'required|email|unique:users,email',
+            'nrp'          => 'nullable|string|unique:users,nrp',
+            'nomor_hp'     => 'nullable|string',
             'password'     => 'required|string|min:6|confirmed', // Harus ada input password_confirmation
             'role'         => 'required|in:Admin,Supervisor,Operator',
+            'jabatan'      => 'nullable|string',
+            'status_karyawan' => 'required|in:Aktif,Non-Aktif',
         ], [
             // Pesan error custom bahasa Indonesia (Opsional)
             'email.unique'    => 'Email ini sudah terdaftar.',
@@ -57,11 +61,15 @@ class UserController extends Controller
         $pengguna = User::create([
             'nama_lengkap' => $request->nama_lengkap,
             'email'        => $request->email,
+            'nrp'          => $request->nrp,
+            'nomor_hp'     => $request->nomor_hp,
             'password'     => Hash::make($request->password),
             'role'         => $request->role,
+            'jabatan'      => $request->jabatan,
+            'status_karyawan' => $request->status_karyawan,
         ]);
 
-        $user->assignRole($request->role);
+        $pengguna->assignRole($request->role);
 
         AuditLog::create([ 
             'user_id' => auth()->id(),
@@ -90,8 +98,12 @@ class UserController extends Controller
             'nama_lengkap' => 'required|string|max:255',
             // PENTING: Tambahkan pengecualian ID agar tidak error 'unique' ke diri sendiri
             'email'        => 'required|email|unique:users,email,' . $user->id,
+            'nrp'          => 'nullable|string|unique:users,nrp,' . $user->id,
+            'nomor_hp'     => 'nullable|string',
             'password'     => 'nullable|string|min:6|confirmed', // Nullable = opsional
             'role'         => 'required|in:Admin,Supervisor,Operator',
+            'jabatan'      => 'nullable|string',
+            'status_karyawan' => 'required|in:Aktif,Non-Aktif',
         ], [
             'email.unique'    => 'Email ini sudah terdaftar di akun lain.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.'
@@ -101,7 +113,11 @@ class UserController extends Controller
         $dataUpdate = [
             'nama_lengkap' => $request->nama_lengkap,
             'email'        => $request->email,
+            'nrp'          => $request->nrp,
+            'nomor_hp'     => $request->nomor_hp,
             'role'         => $request->role,
+            'jabatan'      => $request->jabatan,
+            'status_karyawan' => $request->status_karyawan,
         ];
 
         // Jika form password diisi, berarti dia mau ganti password

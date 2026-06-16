@@ -33,10 +33,30 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">NRP / NIK</label>
+                        <input type="text" name="nrp" value="{{ old('nrp') }}" placeholder="Misal: 12345678" 
+                               class="w-full px-4 py-2 border @error('nrp') border-red-500 @else border-gray-300 @enderror rounded-md focus:ring-emerald-500 text-sm">
+                        @error('nrp') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Nomor HP / WhatsApp</label>
+                        <input type="text" name="nomor_hp" value="{{ old('nomor_hp') }}" placeholder="Misal: 08123456789" 
+                               class="w-full px-4 py-2 border @error('nomor_hp') border-red-500 @else border-gray-300 @enderror rounded-md focus:ring-emerald-500 text-sm">
+                        @error('nomor_hp') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Password <span class="text-red-500">*</span></label>
                         <input type="password" name="password" required placeholder="Minimal 6 karakter" 
                                class="w-full px-4 py-2 border @error('password') border-red-500 @else border-gray-300 @enderror rounded-md focus:ring-emerald-500 text-sm">
                         @error('password') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Konfirmasi Password <span class="text-red-500">*</span></label>
+                        <input type="password" name="password_confirmation" required placeholder="Ketik ulang password" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 text-sm">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Pilih Role / Hak Akses <span class="text-red-500">*</span></label>
@@ -51,11 +71,19 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Konfirmasi Password <span class="text-red-500">*</span></label>
-                        <input type="password" name="password_confirmation" required placeholder="Ketik ulang password" 
-                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 text-sm">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Jabatan Spesifik</label>
+                        <input type="text" name="jabatan" value="{{ old('jabatan') }}" placeholder="Misal: Operator Excavator" 
+                               class="w-full px-4 py-2 border @error('jabatan') border-red-500 @else border-gray-300 @enderror rounded-md focus:ring-emerald-500 text-sm">
+                        @error('jabatan') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Status Karyawan <span class="text-red-500">*</span></label>
+                        <select name="status_karyawan" required class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 focus:ring-emerald-500 text-sm font-bold text-gray-700">
+                            <option value="Aktif" {{ old('status_karyawan') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                            <option value="Non-Aktif" {{ old('status_karyawan') == 'Non-Aktif' ? 'selected' : '' }}>Non-Aktif</option>
+                        </select>
+                        @error('status_karyawan') <span class="text-xs text-red-500 mt-1">{{ $message }}</span> @enderror
                     </div>
                 </div>
 

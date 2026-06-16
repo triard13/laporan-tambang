@@ -27,6 +27,7 @@ class ProfileUpdateRequest extends FormRequest
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
             'foto_profil'  => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
+            'nomor_hp'     => ['nullable', 'string', 'max:20'],
         ];
     }
 }
