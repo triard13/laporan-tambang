@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Riwayat Laporan Produksi Tambang</h2>
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-white leading-tight transition-colors">Riwayat Laporan Produksi Tambang</h2>
             <a href="{{ route('laporan.export', request()->query()) }}" class="inline-flex items-center px-4 py-2 bg-emerald-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-emerald-700 transition ease-in-out duration-150 shadow-sm">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 Ekspor Excel
@@ -9,20 +9,23 @@
         </div>
     </x-slot>
 
-    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-        <div class="p-6 text-gray-900">
+    <div class="bg-white dark:bg-[#18181b] overflow-hidden shadow-sm sm:rounded-lg mb-6 transition-colors">
+        <div class="p-6 text-gray-900 dark:text-white transition-colors">
             <form action="{{ route('laporan.riwayat') }}" method="GET" class="flex flex-col md:flex-row gap-4 items-end">
+                @if(request('search'))
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                @endif
                 <div class="w-full md:w-[22%]">
-                    <label for="tanggal_mulai" class="block text-sm font-medium text-gray-700">Mulai Tanggal</label>
-                    <input type="date" name="tanggal_mulai" id="tanggal_mulai" value="{{ request('tanggal_mulai') }}" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm h-[42px]">
+                    <label for="tanggal_mulai" class="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors">Mulai Tanggal</label>
+                    <input type="date" name="tanggal_mulai" id="tanggal_mulai" value="{{ request('tanggal_mulai') }}" class="mt-1 block w-full border-gray-300 dark:border-[#27272a] bg-white dark:bg-[#27272a] dark:text-white focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm h-[42px] transition-colors">
                 </div>
                 <div class="w-full md:w-[22%]">
-                    <label for="tanggal_akhir" class="block text-sm font-medium text-gray-700">Sampai Tanggal</label>
-                    <input type="date" name="tanggal_akhir" id="tanggal_akhir" value="{{ request('tanggal_akhir') }}" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm h-[42px]">
+                    <label for="tanggal_akhir" class="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors">Sampai Tanggal</label>
+                    <input type="date" name="tanggal_akhir" id="tanggal_akhir" value="{{ request('tanggal_akhir') }}" class="mt-1 block w-full border-gray-300 dark:border-[#27272a] bg-white dark:bg-[#27272a] dark:text-white focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm h-[42px] transition-colors">
                 </div>
                 <div class="w-full md:w-[22%]">
-                    <label for="status_laporan" class="block text-sm font-medium text-gray-700">Status Laporan</label>
-                    <select name="status_laporan" id="status_laporan" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm h-[42px]">
+                    <label for="status_laporan" class="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors">Status Laporan</label>
+                    <select name="status_laporan" id="status_laporan" class="mt-1 block w-full border-gray-300 dark:border-[#27272a] bg-white dark:bg-[#27272a] dark:text-white focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm h-[42px] transition-colors">
                         <option value="">Semua Status</option>
                         <option value="Disetujui" {{ request('status_laporan') == 'Disetujui' ? 'selected' : '' }}>Disetujui</option>
                         <option value="Pending" {{ request('status_laporan') == 'Pending' ? 'selected' : '' }}>Pending</option>
@@ -31,8 +34,8 @@
                     </select>
                 </div>
                 <div class="w-full md:w-[15%]">
-                    <label for="per_page" class="block text-sm font-medium text-gray-700">Tampilkan</label>
-                    <select name="per_page" id="per_page" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm h-[42px]">
+                    <label for="per_page" class="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors">Tampilkan</label>
+                    <select name="per_page" id="per_page" class="mt-1 block w-full border-gray-300 dark:border-[#27272a] bg-white dark:bg-[#27272a] dark:text-white focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm h-[42px] transition-colors">
                         <option value="10" {{ request('per_page') == '10' ? 'selected' : '' }}>10 Baris</option>
                         <option value="20" {{ request('per_page') == '20' ? 'selected' : '' }}>20 Baris</option>
                         <option value="50" {{ request('per_page') == '50' ? 'selected' : '' }}>50 Baris</option>
@@ -43,7 +46,7 @@
                     <button type="submit" class="inline-flex items-center justify-center px-4 h-[42px] bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
                         Filter
                     </button>
-                    @if(request()->anyFilled(['tanggal_mulai', 'tanggal_akhir', 'status_laporan', 'per_page']))
+                    @if(request()->anyFilled(['tanggal_mulai', 'tanggal_akhir', 'status_laporan', 'per_page', 'search']))
                         <a href="{{ route('laporan.riwayat') }}" class="inline-flex items-center justify-center px-4 h-[42px] bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 transition ease-in-out duration-150">
                             Reset
                         </a>
@@ -53,9 +56,8 @@
         </div>
     </div>
 
-    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-        <div class="p-6 text-gray-900">
-            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+    <div class="bg-white dark:bg-[#18181b] overflow-hidden shadow-sm sm:rounded-lg transition-colors">
+        <div class="p-6 text-gray-900 dark:text-white transition-colors">
             
         @if(session('success'))
                         <div class="px-6 pt-4">
@@ -76,7 +78,7 @@
                         </div>
                     @endif
 
-            <div class="mb-6 bg-amber-50 border-l-4 border-amber-400 p-4">
+            <div class="mb-6 bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-400 dark:border-amber-600 p-4 transition-colors">
                 <div class="flex">
                     <div class="flex-shrink-0">
                         <svg class="h-5 w-5 text-amber-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -84,7 +86,7 @@
                         </svg>
                     </div>
                     <div class="ml-3">
-                        <p class="text-sm text-amber-700">
+                        <p class="text-sm text-amber-700 dark:text-amber-400 transition-colors">
                             Berikut adalah daftar seluruh laporan produksi tambang. Anda dapat melihat status laporan apakah sudah disetujui, ditolak, atau menunggu verifikasi.
                         </p>
                     </div>
@@ -92,38 +94,38 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-[#27272a] transition-colors">
+                    <thead class="bg-gray-50 dark:bg-white/5 transition-colors">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Shift</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lokasi</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alat Berat</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Operator</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produksi [BCM]</th>
-                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider transition-colors">Tanggal</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider transition-colors">Shift</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider transition-colors">Lokasi</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider transition-colors">Alat Berat</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider transition-colors">Operator</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider transition-colors">Produksi [BCM]</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider transition-colors">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="bg-white dark:bg-[#18181b] divide-y divide-gray-200 dark:divide-[#27272a] transition-colors">
                         @forelse ($laporans as $laporan)
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            <tr class="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300 transition-colors">
                                     {{ \Carbon\Carbon::parse($laporan->tanggal)->format('d M Y') }}
                                 </td>
-                               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300 transition-colors">
                                     {{ $laporan->shift }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300 transition-colors">
                                     {{ $laporan->lokasiTambang->nama_lokasi ?? '-' }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <div class="font-medium text-gray-900">{{ $laporan->alatTambang->nama_alat ?? '-' }}</div>
-                                    <div class="text-xs text-gray-500">({{ $laporan->alatTambang->tipe_alat ?? '-' }})</div>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 transition-colors">
+                                    <div class="font-medium text-gray-900 dark:text-gray-200">{{ $laporan->alatTambang->nama_alat ?? '-' }}</div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">({{ $laporan->alatTambang->tipe_alat ?? '-' }})</div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300 transition-colors">
                                     {{ $laporan->user->nama_lengkap ?? '-' }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200 font-semibold transition-colors">
                                     {{ number_format($laporan->volume, 0, ',', '.') }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
@@ -145,13 +147,13 @@
                                             ✎ Detail
                                         </a>
                                     @else
-                                        <span class="text-[9px] text-gray-400 italic">Locked</span>
+                                        <span class="text-[9px] text-gray-400 dark:text-gray-500 italic">Locked</span>
                                     @endif
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-500">
+                                <td colspan="6" class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-500 dark:text-gray-400">
                                     Belum ada data laporan harian.
                                 </td>
                             </tr>

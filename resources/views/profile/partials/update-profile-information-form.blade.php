@@ -1,10 +1,10 @@
 <section>
     <header>
-        <h2 class="text-lg font-medium text-gray-900">
+        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 transition-colors">
             {{ __('Informasi Profil') }}
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
+        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400 transition-colors">
             {{ __('Perbarui informasi profil dan kontak Anda. Beberapa data yang bersifat administratif hanya dapat diubah oleh Administrator.') }}
         </p>
     </header>
@@ -25,9 +25,9 @@
 
         <div>
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full bg-gray-50 text-gray-500" :value="old('email', $user->email)" required readonly />
+            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full bg-gray-50 dark:bg-[#27272a] text-gray-500 dark:text-gray-400" :value="old('email', $user->email)" required readonly />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
-            <p class="text-xs text-gray-500 mt-1">Alamat email digunakan untuk login dan tidak dapat diubah sendiri.</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 transition-colors">Alamat email digunakan untuk login dan tidak dapat diubah sendiri.</p>
         </div>
 
         <div>
@@ -36,24 +36,24 @@
             <x-input-error class="mt-2" :messages="$errors->get('nomor_hp')" />
         </div>
 
-        <hr class="border-gray-200">
+        <hr class="border-gray-200 dark:border-[#27272a] transition-colors">
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <x-input-label :value="__('NRP / NIK')" />
-                <x-text-input type="text" class="mt-1 block w-full bg-gray-50 text-gray-500" :value="$user->nrp ?? '-'" disabled />
+                <x-text-input type="text" class="mt-1 block w-full bg-gray-50 dark:bg-[#27272a] text-gray-500 dark:text-gray-400" :value="$user->nrp ?? '-'" disabled />
             </div>
             <div>
                 <x-input-label :value="__('Hak Akses (Role)')" />
-                <x-text-input type="text" class="mt-1 block w-full bg-gray-50 text-gray-500" :value="$user->role ?? '-'" disabled />
+                <x-text-input type="text" class="mt-1 block w-full bg-gray-50 dark:bg-[#27272a] text-gray-500 dark:text-gray-400" :value="$user->role ?? '-'" disabled />
             </div>
             <div>
                 <x-input-label :value="__('Jabatan Spesifik')" />
-                <x-text-input type="text" class="mt-1 block w-full bg-gray-50 text-gray-500" :value="$user->jabatan ?? '-'" disabled />
+                <x-text-input type="text" class="mt-1 block w-full bg-gray-50 dark:bg-[#27272a] text-gray-500 dark:text-gray-400" :value="$user->jabatan ?? '-'" disabled />
             </div>
             <div>
                 <x-input-label :value="__('Status Karyawan')" />
-                <x-text-input type="text" class="mt-1 block w-full bg-gray-50 text-gray-500" :value="$user->status_karyawan ?? '-'" disabled />
+                <x-text-input type="text" class="mt-1 block w-full bg-gray-50 dark:bg-[#27272a] text-gray-500 dark:text-gray-400" :value="$user->status_karyawan ?? '-'" disabled />
             </div>
         </div>
 
@@ -61,7 +61,7 @@
             <x-input-label for="foto_profil" :value="__('Foto Profil (Opsional)')" />
             
             <div class="mt-2 flex items-center gap-4">
-                <div class="w-16 h-16 rounded-full overflow-hidden border border-gray-200 shadow-sm flex-shrink-0">
+                <div class="w-16 h-16 rounded-full overflow-hidden border border-gray-200 dark:border-[#3f3f46] shadow-sm flex-shrink-0 transition-colors">
                     @if($user->foto_profil)
                         <img src="{{ asset('storage/' . $user->foto_profil) }}" alt="Profil" class="w-full h-full object-cover">
                     @else
@@ -70,7 +70,7 @@
                 </div>
                 
                 <input id="foto_profil" name="foto_profil" type="file" accept="image/png, image/jpeg, image/jpg" 
-                       class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-gray-800 file:text-white hover:file:bg-gray-700 transition" />
+                       class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-gray-800 dark:file:bg-white file:text-white dark:file:text-gray-800 hover:file:bg-gray-700 dark:hover:file:bg-gray-200 transition-colors" />
             </div>
             <x-input-error class="mt-2" :messages="$errors->get('foto_profil')" />
         </div>

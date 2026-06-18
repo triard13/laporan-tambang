@@ -4,9 +4,9 @@
     </x-slot>
 
     <div class="max-w-5xl mx-auto py-6">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-100">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-                <h3 class="text-md font-bold text-gray-700 uppercase tracking-tight">Form Input Laporan Harian Tambang</h3>
+        <div class="bg-white dark:bg-[#18181b] overflow-hidden shadow-sm sm:rounded-lg border border-gray-100 dark:border-[#27272a] transition-colors">
+            <div class="px-6 py-4 border-b border-gray-100 dark:border-[#27272a] bg-gray-50/50 dark:bg-white/5 transition-colors">
+                <h3 class="text-md font-bold text-gray-700 dark:text-white uppercase tracking-tight transition-colors">Form Input Laporan Harian Tambang</h3>
             </div>
 
             @if(session('success'))
@@ -33,17 +33,17 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Tanggal <span class="text-red-500">*</span></label>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2 transition-colors">Tanggal <span class="text-red-500">*</span></label>
                         <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 dark:text-gray-500">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                             </span>
-                            <input type="date" name="tanggal" value="{{ date('Y-m-d') }}" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md bg-gray-50 focus:ring-emerald-500 focus:border-emerald-500 text-sm">
+                            <input type="date" name="tanggal" value="{{ date('Y-m-d') }}" class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-[#27272a] rounded-md bg-gray-50 dark:bg-[#27272a] dark:text-white focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-colors">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Shift <span class="text-red-500">*</span></label>
-                        <select name="shift" class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 focus:ring-emerald-500 focus:border-emerald-500 text-sm">
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2 transition-colors">Shift <span class="text-red-500">*</span></label>
+                        <select name="shift" class="w-full px-4 py-2 border border-gray-300 dark:border-[#27272a] rounded-md bg-gray-50 dark:bg-[#27272a] dark:text-white focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-colors">
                             <option value="Shift 1">Shift 1</option>
                             <option value="Shift 2">Shift 2</option>
                         </select>
@@ -52,8 +52,8 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Lokasi Tambang <span class="text-red-500">*</span></label>
-                        <select name="lokasi_tambang_id" required class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 focus:ring-emerald-500 focus:border-emerald-500 text-sm">
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2 transition-colors">Lokasi Tambang <span class="text-red-500">*</span></label>
+                        <select name="lokasi_tambang_id" required class="w-full px-4 py-2 border border-gray-300 dark:border-[#27272a] rounded-md bg-gray-50 dark:bg-[#27272a] dark:text-white focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-colors">
                             <option value="">-- Pilih Lokasi --</option>
                             @foreach($lokasiTambang as $lokasi)
                                 <option value="{{ $lokasi->id }}">{{ $lokasi->nama_lokasi }}</option>
@@ -69,25 +69,25 @@
                         dropdownBuka: false 
                     }" class="relative">
                         
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-400 mb-2 uppercase tracking-wide transition-colors">
                             Alat Berat <span class="text-red-500">*</span>
                         </label>
                         
                         <input type="hidden" name="alat_tambang_id" x-model="alatTerpilih">
 
-                        <div class="flex items-center justify-between p-2.5 border border-gray-200 rounded-lg bg-white shadow-sm hover:border-[#509673] transition">
+                        <div class="flex items-center justify-between p-2.5 border border-gray-200 dark:border-[#27272a] rounded-lg bg-white dark:bg-[#27272a] shadow-sm hover:border-[#509673] transition-colors">
                             
                             <div class="flex items-center gap-4">
-                                <div class="bg-gray-50 p-2 rounded-md border border-gray-100 flex-shrink-0">
+                                <div class="bg-gray-50 dark:bg-white/5 p-2 rounded-md border border-gray-100 dark:border-transparent flex-shrink-0 transition-colors">
                                     <img :src="gambarAlat" class="w-8 h-8 object-cover opacity-80" alt="Icon Alat">
                                 </div>
                                 
                                 <div class="flex flex-col truncate">
-                                    <div class="text-[14px] font-bold text-[#1e293b] flex flex-wrap gap-1 items-center">
+                                    <div class="text-[14px] font-bold text-[#1e293b] dark:text-white flex flex-wrap gap-1 items-center transition-colors">
                                         <span x-text="namaAlat" class="truncate max-w-[200px]"></span>
-                                        <span class="font-normal text-gray-500 text-xs truncate" x-text="tipeAlat ? '(' + tipeAlat + ')' : ''"></span>
+                                        <span class="font-normal text-gray-500 dark:text-gray-400 text-xs truncate transition-colors" x-text="tipeAlat ? '(' + tipeAlat + ')' : ''"></span>
                                     </div>
-                                    <div class="text-[10px] font-bold text-gray-400 mt-0.5 tracking-wider uppercase">UNIT READY • 1 243 COL</div>
+                                    <div class="text-[10px] font-bold text-gray-400 dark:text-gray-500 mt-0.5 tracking-wider uppercase transition-colors">UNIT READY • 1 243 COL</div>
                                 </div>
                             </div>
 
@@ -109,7 +109,7 @@
                             x-transition:leave="transition ease-in duration-75"
                             x-transition:leave-start="transform opacity-100 scale-100"
                             x-transition:leave-end="transform opacity-0 scale-95"
-                            class="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-xl max-h-60 overflow-y-auto"
+                            class="absolute z-50 w-full mt-2 bg-white dark:bg-[#18181b] border border-gray-200 dark:border-[#27272a] rounded-lg shadow-xl max-h-60 overflow-y-auto transition-colors"
                             style="display: none;">
                             
                             <ul class="py-1">
@@ -124,13 +124,13 @@
                                                 gambarAlat = '{{ $alat->gambar ? asset('storage/' . $alat->gambar) : asset('truck-icon.svg') }}';
                                                 dropdownBuka = false;
                                             "
-                                            class="w-full flex items-center gap-3 text-left px-4 py-3 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition border-b border-gray-50 last:border-b-0">
+                                            class="w-full flex items-center gap-3 text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/10 focus:bg-gray-50 dark:focus:bg-white/10 focus:outline-none transition border-b border-gray-50 dark:border-[#27272a] last:border-b-0">
                                         
-                                        <img src="{{ $alat->gambar ? asset('storage/' . $alat->gambar) : asset('truck-icon.svg') }}" class="w-8 h-8 rounded object-cover border border-gray-100" alt="img">
+                                        <img src="{{ $alat->gambar ? asset('storage/' . $alat->gambar) : asset('truck-icon.svg') }}" class="w-8 h-8 rounded object-cover border border-gray-100 dark:border-transparent transition-colors" alt="img">
                                         
                                         <div>
-                                            <div class="font-bold text-gray-800 text-sm">{{ $alat->nama_alat }}</div>
-                                            <div class="text-xs text-gray-500 mt-0.5">{{ $alat->tipe_alat }}</div>
+                                            <div class="font-bold text-gray-800 dark:text-gray-300 text-sm transition-colors">{{ $alat->nama_alat }}</div>
+                                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 transition-colors">{{ $alat->tipe_alat }}</div>
                                         </div>
                                     </button>
                                 </li>
@@ -142,64 +142,64 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Operator <span class="text-emerald-500">●</span></label>
-                        <input type="text" readonly value="{{ auth()->user()->nama_lengkap }}" class="w-full px-4 py-2 border border-gray-200 rounded-md bg-gray-100 text-gray-500 text-sm cursor-not-allowed">
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2 transition-colors">Operator <span class="text-emerald-500">●</span></label>
+                        <input type="text" readonly value="{{ auth()->user()->nama_lengkap }}" class="w-full px-4 py-2 border border-gray-200 dark:border-transparent rounded-md bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 text-sm cursor-not-allowed transition-colors">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Admin Pengawas</label>
-                        <input type="text" readonly value="Agus Wijaya" class="w-full px-4 py-2 border border-gray-200 rounded-md bg-gray-100 text-gray-500 text-sm cursor-not-allowed">
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2 transition-colors">Admin Pengawas</label>
+                        <input type="text" readonly value="Agus Wijaya" class="w-full px-4 py-2 border border-gray-200 dark:border-transparent rounded-md bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 text-sm cursor-not-allowed transition-colors">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-gray-100 pt-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-gray-100 dark:border-[#27272a] pt-6 transition-colors">
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Material <span class="text-red-500">*</span></label>
-                        <select name="material" class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 text-sm focus:ring-emerald-500 focus:border-emerald-500" required>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2 transition-colors">Material <span class="text-red-500">*</span></label>
+                        <select name="material" class="w-full px-4 py-2 border border-gray-300 dark:border-[#27272a] rounded-md bg-gray-50 dark:bg-[#27272a] dark:text-white text-sm focus:ring-emerald-500 focus:border-emerald-500 transition-colors" required>
                             <option value="Overburden">Overburden (OB)</option>
                             <option value="Batu Bara">Batu Bara</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Volume [BCM/Ton] <span class="text-red-500">*</span></label>
-                        <input type="number" step="0.01" name="volume" required placeholder="2500" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500 text-sm">
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2 transition-colors">Volume [BCM/Ton] <span class="text-red-500">*</span></label>
+                        <input type="number" step="0.01" name="volume" required placeholder="2500" class="w-full px-4 py-2 border border-gray-300 dark:border-[#27272a] rounded-md dark:bg-[#27272a] dark:text-white focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-colors">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Jarak Angkut [m] <span class="text-emerald-500">●</span></label>
-                        <input type="number" name="jarak" required placeholder="1500" class="w-full px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-emerald-500 focus:border-emerald-500 text-sm">
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2 transition-colors">Jarak Angkut [m] <span class="text-emerald-500">●</span></label>
+                        <input type="number" name="jarak" required placeholder="1500" class="w-full px-4 py-2 border border-gray-300 dark:border-[#27272a] rounded-md bg-white dark:bg-[#27272a] dark:text-white focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-colors">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Jam Kerja <span class="text-emerald-500">●</span></label>
-                        <select name="jam_operasi" class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 text-sm focus:ring-emerald-500 focus:border-emerald-500">
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2 transition-colors">Jam Kerja <span class="text-emerald-500">●</span></label>
+                        <select name="jam_operasi" class="w-full px-4 py-2 border border-gray-300 dark:border-[#27272a] rounded-md bg-gray-50 dark:bg-[#27272a] dark:text-white text-sm focus:ring-emerald-500 focus:border-emerald-500 transition-colors">
                             <option value="8">8 Jam</option>
                             <option value="12">12 Jam</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Konsumsi BBM [L] <span class="text-red-500">*</span></label>
-                        <input type="number" name="bahan_bakar" placeholder="220" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500 text-sm">
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2 transition-colors">Konsumsi BBM [L] <span class="text-red-500">*</span></label>
+                        <input type="number" name="bahan_bakar" placeholder="220" class="w-full px-4 py-2 border border-gray-300 dark:border-[#27272a] rounded-md dark:bg-[#27272a] dark:text-white focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-colors">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-gray-100 pt-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-gray-100 dark:border-[#27272a] pt-6 transition-colors">
                     <div class="md:col-span-2">
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Catatan Tambahan (Opsional)</label>
-                        <textarea name="catatan" rows="2" placeholder="Catatan tambahan atau kendala lapangan..." class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500 text-sm"></textarea>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2 transition-colors">Catatan Tambahan (Opsional)</label>
+                        <textarea name="catatan" rows="2" placeholder="Catatan tambahan atau kendala lapangan..." class="w-full px-4 py-2 border border-gray-300 dark:border-[#27272a] rounded-md dark:bg-[#27272a] dark:text-white focus:ring-emerald-500 focus:border-emerald-500 text-sm transition-colors"></textarea>
                     </div>
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Kondisi Cuaca <span class="text-emerald-500">●</span></label>
-                            <select name="cuaca" class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 text-sm focus:ring-emerald-500 focus:border-emerald-500">
+                            <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2 transition-colors">Kondisi Cuaca <span class="text-emerald-500">●</span></label>
+                            <select name="cuaca" class="w-full px-4 py-2 border border-gray-300 dark:border-[#27272a] rounded-md bg-gray-50 dark:bg-[#27272a] dark:text-white text-sm focus:ring-emerald-500 focus:border-emerald-500 transition-colors">
                                 <option value="Cerah">Cerah</option>
                                 <option value="Hujan">Hujan</option>
                                 <option value="Berawan">Berawan</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Hambatan Operasional</label>
-                            <select name="hambatan" class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 text-sm font-bold text-emerald-600 focus:ring-emerald-500 focus:border-emerald-500">
+                            <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2 transition-colors">Hambatan Operasional</label>
+                            <select name="hambatan" class="w-full px-4 py-2 border border-gray-300 dark:border-[#27272a] rounded-md bg-gray-50 dark:bg-[#27272a] text-sm font-bold text-emerald-600 focus:ring-emerald-500 focus:border-emerald-500 transition-colors">
                                 <option value="Tidak Ada">TIDAK ADA</option>
                                 <option value="Breakdown">BREAKDOWN</option>
                                 <option value="Slippery">SLIPPERY</option>
@@ -208,11 +208,11 @@
                     </div>
                 </div>
 
-                <div class="pt-6 border-t border-gray-100 flex gap-4">
+                <div class="pt-6 border-t border-gray-100 dark:border-[#27272a] flex gap-4 transition-colors">
                     <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-10 py-2 rounded-md font-bold text-sm shadow-sm transition">
                         Simpan
                     </button>
-                    <button type="reset" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-10 py-2 rounded-md font-bold text-sm transition">
+                    <button type="reset" class="bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300 px-10 py-2 rounded-md font-bold text-sm transition-colors">
                         Reset
                     </button>
                 </div>

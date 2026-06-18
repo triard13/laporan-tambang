@@ -29,6 +29,22 @@ class LaporanController extends Controller
         $query = ProduksiHarian::with(['user', 'alatTambang', 'lokasiTambang'])->orderBy('tanggal', 'desc')->orderBy('created_at', 'desc');
 
         // Apply filters
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('material', 'like', "%{$searchTerm}%")
+                  ->orWhere('status_laporan', 'like', "%{$searchTerm}%")
+                  ->orWhereHas('user', function($q) use ($searchTerm) {
+                      $q->where('nama_lengkap', 'like', "%{$searchTerm}%");
+                  })
+                  ->orWhereHas('alatTambang', function($q) use ($searchTerm) {
+                      $q->where('nama_alat', 'like', "%{$searchTerm}%");
+                  })
+                  ->orWhereHas('lokasiTambang', function($q) use ($searchTerm) {
+                      $q->where('nama_lokasi', 'like', "%{$searchTerm}%");
+                  });
+            });
+        }
         if ($request->filled('tanggal_mulai')) {
             $query->whereDate('tanggal', '>=', $request->tanggal_mulai);
         }

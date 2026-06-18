@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AnalisisController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AlatTambangController;
 use App\Http\Controllers\LokasiTambangController;
@@ -42,6 +43,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->middleware('can:dashboard')
         ->name('dashboard');
+
+    Route::get('/analisis', [AnalisisController::class, 'index'])
+        ->middleware('can:dashboard')
+        ->name('analisis.index');
 
     // 2. Modul Data Laporan (Input, Verifikasi, Riwayat)
     Route::middleware('can:input')->group(function () {
